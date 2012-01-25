@@ -13,7 +13,7 @@ swig -java -package edu.mit.kerberos -outdir ./edu/mit/kerberos -o gsswrapper_wr
 
 # Compile and link libgsswrapper.so
 gcc -c gsswrapper_wrap.c -I/usr/lib/jvm/java-6-openjdk/include -I/usr/local/include/gssapi
-gcc -shared gsswrapper_wrap.o -L/home/chrisc/Downloads/krb-svn/src/lib -lgssapi_krb5 -lkrb5 -lk5crypto -lcom_err -lkrb5support -o libgsswrapper.so
+gcc -shared gsswrapper_wrap.o -L/home/myuser/kerberos/src/lib -lgssapi_krb5 -lkrb5 -lk5crypto -lcom_err -lkrb5support -o libgsswrapper.so
 
 # Build our example client and server
 javac Util.java client.java server.java
