@@ -1,0 +1,448 @@
+
+MIT Kerberos GSS-API Java Interface
+
+This package provides a Java wrapper around the the MIT Kerberos GSS-API 
+library. It exposes the standard GSS-API functions through a SWIG-generated 
+interface to Java applications. One of the main goals of this interface is to 
+bring GSS-API functionality to Android, which up to this point has lacked both
+Kerberos and GSS-API. Using this interface, Android developers can use 
+GSS-API functionality in their Android NDK applications.
+
+This GSS-API interface is a Java wrapper for the existing Kerberos GSS-API
+C-bindings, with some slight modifications to match the Java programming 
+language style and object-oriented programming.
+
+This document will briefly explain how to use this interface from Java.
+For a working example of an Android NDK application using this GSS-API
+interface, please refer to the "Kerberos Android NDK" package on GitHub,
+here: https://github.com/cconlon/kerberos-android-ndk.
+
+===========================================================================
+CONTENTS:
+
+1.  Requirements
+2.  Wrapper Design
+3.  Building
+     3.1  Android NDK
+     3.2  Desktop Environment
+4.  Interface Usage
+     4.1  GSS-API Java objects
+     4.2  GSS-API Constants
+     4.3  Status Code Macros
+     4.4  Helper Functions
+     4.5  Structure Extensions
+     4.6  GSS-API Methods
+5.  Examples
+     5.1  Client
+     5.2  Server
+6.  License
+7.  Support
+
+===========================================================================
+REQUIREMENTS:
+
+You must have SWIG installed on your development machine in order to
+generate this GSS-API wrapper. To download and install SWIG, please see
+the project homepage at http://www.swig.org/.
+
+To use this interface in your Android NDK application, you need to
+include cross-compiled versions of the MIT Kerberos libraries for Android
+in your project. For details about these libraries and an example of how to
+include them in your project, please see the "Kerberos Android NDK" 
+application on GitHub, here: https://github.com/cconlon/kerberos-android-ndk
+
+If you want to rebuild the pre-built Kerberos libraries, please use the
+android-config.sh shell script found in the above noted project. This will 
+allow the MIT Kerberos libraries to be cross-compiled for the Android 
+platform. More detailed instructions can be found in the script comments.
+
+===========================================================================
+WRAPPER DESIGN:
+
+This wrapper is comprised of a few files which are used by SWIG to generate 
+the Java GSS-API interface, namely:
+
+gsswrapper.i
+------------
+This is the SWIG interface file. It contains all of the code and typemaps 
+needed by SWIG to generate the corresponding Java interface for the MIT 
+GSS-API library. 
+
+gsswrapper_wrap.h
+-----------------
+
+This is a header file that provides function prototypes for the SWIG-generated 
+C wrapper functions. If functions are changed in gsswrapper.i, this file 
+should be updated to match accordingly.
+
+===========================================================================
+BUILDING:
+
+The Java GSS-API interface can be built either for use in an Android
+NDK application or for use on a standard desktop environment.
+
+Android NDK
+-----------
+To build this wrapper for use with the Android NDK:
+
+(1) Copy both gsswrapper.i and gsswrapper_wrap.h to your project's 'jni' 
+     folder.
+
+(2) Create src/edu/mit/kerberos directory structure under your NDK
+    application's project root directory.
+
+(3) Verify that the library being loaded by the SWIG wrapper (gsswrapper.i) 
+    is the correct one. For an Android NDK library, this will be the name
+    of your native shared library. Please note that by doing this,
+    the SWIG wrapper will automatically load your shared library,
+    making it not necessary to load manually from within your application
+    code.
+
+(4) From your Android NDK project's root directory, run the following
+    command. This will generate all the necessary interface files.
+
+    swig -java -package edu.mit.kerberos -outdir ./src/edu/mit/kerberos
+        -o ./jni/gsswrapper_wrap.c ./jni/gsswrapper.i
+
+(5) Make sure you have included cross-compiled versions of the necessary MIT
+    Kerberos libraries as well as the Kerberos and CyaSSL header files in your 
+    Android NDK project. See "kerberos-android-ndk" sample app (reference 
+    above) for an example and instructions on how to cross compile the 
+    Kerberos libraries. A common place to put these would be ./jni/libs and 
+    ./jni/include, as done in the example Kerberos Android NDK project.
+
+(6) Add necessary MIT Kerberos libraries and gsswrapper_wrap.c to Android.mk
+    file as shown in the example Kerberos Android application.
+
+(7) In your application .java files, add an import for the edu.mit.kerberos
+    package:
+
+    import edu.mit.kerberos.*;
+
+(8) If desired, modify your application class to implement gsswrapperConstants
+    for easy access to GSS-API constant variables.  For example,
+
+    public class myClass extends Activity implements gsswrapperConstants
+
+(9) Build and install your NDK application like normal (ndk-build, ant debug,
+    ant install, etc.).
+
+Desktop Environment
+-------------------
+To build both the interface and examples on a desktop environment, 
+
+(1) cd to the directory containing gsswrapper.i and edit the JavaBuild.sh file 
+    to match your system's Java and Kerberos configuration. 
+
+(2) Verify that the library being loaded by the SWIG wrapper (gsswrapper.i)
+    is the correct one. This should be the name of the library being created
+    by the JavaBuild.sh script.
+
+(3) Run ./JavaBuild.sh
+    
+    This will run the correct SWIG command, create libgsswrapper.so as well
+    as generate and compile all the necessary JNI and Java files needed
+    for the interface and examples.
+
+(4) Set LD_LIBRARY_PATH to include paths to the MIT Kerberos libraries on
+    your system as well as the location of the SWIG-generated library.
+    For example, something similar to:
+
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib:
+        /home/myuser/kerberos-java-gssapi/
+
+===========================================================================
+INTERFACE USAGE:
+
+The Java GSS-API inteface functions are located in gsswrapper.java, while 
+there are several separate Java files for each GSS-API structure. Because
+Java is an object oriented language, the Java GSS-API interface usage differs 
+slightly from the standard MIT GSS-API usage. Java doesn't make use of 
+pointers as the C language does. Becuase of this, each GSS-API structure has 
+been standardized to a single object in Java, following the naming scheme 
+XXXX_desc, where XXXX is the name of the structure (ex: The Java object for 
+a gss_OID object is gss_OID_desc).
+
+For example, in the native MIT GSS-API library, there can be direct structure
+usage, a pointer to that structure, or a pointer to a pointer. In Java, all
+of these usages are simplified to a single object. The SWIG wrapper is
+responsible for converting this object into the correct C form to pass back
+to the native MIT GSS-API library.
+
+In Java, GSS-API functions can be accessed through the gsswrapper.java file
+like so:
+
+maj_status = gsswrapper.gss_accept_sec_context(min_status, ...);
+
+Because many of the native GSS-API functions return values inside function
+parameters as OM_uint32 types, you must use a Java array for those parameters.
+For example, defining the GSS-API min_status variable in Java can be done 
+like so:
+
+long[] min_status = {0};
+
+In this case, the returned min_status value by the gss_accept_sec_context 
+method will be placed into the first element of the Java long[] 
+(min_status[0]).
+
+
+GSS-API Java objects
+--------------------
+GSS-API structures/objects can be created like normal Java objects. For 
+example to create a gss_OID and a gss_cred_id_t object, you would use:
+
+gss_OID_desc myoid = new gss_OID_desc();
+gss_cred_id_t_desc mycreds = new gss_cred_id_t_desc();
+
+A list of GSS-API objects which are available through the Java interface 
+include:
+
+gss_OID_desc() / gss_OID_desc(String mechanism)
+                 mechanism = optional mech string to initialize the OID with 
+                 (ex: "{ 1 2 840 113554 1 2 2}").
+gss_OID_set_desc()
+gss_buffer_desc() / gss_buffer_desc(String value)
+                 value = optional string to initialize the buffer with.
+gss_channel_bindings_struct()
+gss_cred_id_t_desc()
+gss_ctx_id_t_desc()
+gss_name_t_desc()
+
+
+GSS-API Constants
+-----------------
+All GSS-API constants, including calling errors, routine errors,
+supplementary info bits, etc, are located in the gsswrapperConstants.java 
+file. If your application code implements this file, the constants can be 
+used directly. For example, if a Java class implements gsswrapperConstants:
+
+public class myClass implements gsswrapperConstants
+{
+    ...
+}
+
+Then the constants can be used directly inside of that class:
+
+if (maj_status != GSS_S_COMPLETE) { ... }
+
+
+Status Code Macros
+------------------
+GSS-API macros that test status codes for error conditions are located in
+gsswrapper.java. Specific details can be seen in either gsswrapper.java or 
+gsswrapper.i. The macros included are:
+
+GSS_CALLING_ERROR
+GSS_ROUTINE_ERROR
+GSS_SUPPLEMENTARY_INFO
+GSS_ERROR
+GSS_CALLING_ERROR_FIELD
+GSS_ROUTINE_ERROR_FIELD
+GSS_SUPPLEMENTARY_INFO_FIELD
+
+
+Helper Functions
+----------------
+
+[ gss_display_status_wrap ]
+
+This method has been included in the GSS-API Java interface to provide
+a wrapper around the standard GSS-API gss_display_status function. It is
+needed because Java passes in a long for min_status instead of a pointer
+to an OM_uint32. The Java prototype for this method is:
+
+public static long gss_display_status_wrap(
+        long min_status,
+        long status_value,
+        int status_type,
+        gss_OID_desc mech_type,
+        long[] message_context,
+        gss_buffer_desc status_string);
+
+[ getDescArray ]
+
+This method allows the easy retrieval of gss_buffer_t value by Java. In the
+example Kerberos Android application it is used to get the value of an
+outputToken (gss_buffer_desc) as a Java byte[] to send across the network.
+The Java prototype for this method is:
+
+public static byte[] getDescArray(gss_buffer_desc buffer);
+
+[ setDescArray ]
+
+This method allows the value of a gss_buffer_t object to be set from Java
+using a Java byte[] as input. In the example Kerberos Android application,
+it is used to set the value of an inputToken after it has been received
+as a byte[] from the example server. The Java prototype for this method is:
+
+public static int setDescArray(gss_buffer_desc buffer, byte[] javaArray);
+
+
+Structure Extensions
+--------------------
+
+[ gss_OID_set_desc.getElement ]
+
+This method is used to get a specific member of a gss_OID_set_desc object.
+It takes an offset as input and returns a gss_OID_desc object. The Java
+prototype is:
+
+public gss_OID_desc getElement(int offset);
+
+[ gss_OID_desc.equals ]
+
+This is a comparison function for a gss_OID_desc and input mech string.
+It returns 1 if the two are equal, otherwise 0. The Java prototype is:
+
+public int equals(String mechString_in);
+
+
+GSS-API Methods
+---------------
+The following standard GSS-API functions are included in the Java GSS-API 
+interface. For documentation regarding each individual function, please
+reference standard GSS-API documentation.
+
+gss_acquire_cred
+gss_release_cred
+gss_init_sec_context
+gss_accept_sec_context
+gss_process_context_token
+gss_delete_sec_context
+gss_context_time
+gss_get_mic
+gss_verify_mic
+gss_wrap
+gss_unwrap
+gss_display_status (wrapped as gss_display_status_wrap)
+gss_indicate_mechs
+gss_compare_name
+gss_display_name
+gss_import_name
+gss_release_name
+gss_release_buffer
+gss_release_oid_set
+gss_inquire_cred
+gss_inquire_context
+gss_wrap_size_limit
+gss_add_cred
+gss_inquire_cred_by_mech
+gss_export_sec_context
+gss_import_sec_context
+gss_release_oid
+gss_create_empty_oid_set
+gss_add_oid_set_member
+gss_test_oid_set_member
+gss_str_to_oid
+gss_oid_to_str
+gss_inquire_names_for_mech
+gss_inquire_mechs_for_name
+gss_sign
+gss_verify
+gss_seal
+gss_unseal
+gss_export_name
+gss_duplicate_name
+gss_canonicalize_name
+gss_pseudo_random
+gss_store_cred
+gss_set_neg_mechs
+gss_indicate_mechs_by_attrs
+gss_inquire_attrs_for_mechs
+gss_display_mech_attr
+gss_inquire_saslname_for_mech
+gss_inquire_mech_for_saslname
+
+===========================================================================
+EXAMPLES:
+
+To help in understanding how to use this Java GSS-API wrapper in your
+application or project, there is both a client and server example included
+in this package. Both examples use utility functions from the included 
+Util.java class. If you use Util.java in your application, make sure
+to change the System.out.println(...) calls to your preferred logging
+output method.
+
+Client
+------
+For Android, the client example is built into the example application 
+(KerberosAppActivity.java). This client is also provided in a stand-alone 
+Java example which may be run on standard desktop operating environments 
+(client.java). Before running the examples, your Kerberos KDC and krb5.conf
+need to be set up correctly to match the principal names you use in
+the examples.
+
+The client example expects that the user has already run kinit to receive
+a TGT for the client principal. The client principal name (clientName),
+server service name (serviceName), server address (server), and the server 
+port (port) need to be set to the correct values in either 
+KerberosAppActivity.java or client.java before they are compiled.
+
+If running the client in a desktop environment, after starting the server
+example, run:
+
+java client
+
+After the client has been started, it will do several things:
+(1) Establish a GSS-API context with the server example
+(2) Send a wrapped message to the server and verify the returned
+    signature block. This is done using gss_wrap / gss_verify_mic.
+(3) Repeat step 2, but using gss_seal / gss_verify instead.
+(4) Perform misc. GSS-API function tests and exit.
+
+Server
+------
+The server example is designed to be run on a standard desktop platform
+and has been tested on Linux. It is located in server.java and will connect to 
+either the desktop example client (client.java) or the Android example client 
+(KerberosAppActivity.java). The server port (server_port) and server service 
+name (serviceName) should be modified to the desired values before compiling 
+the example server.
+
+On a desktop environment, after compiling and configuring the server, 
+start the server using:
+
+java server
+
+Once started, the server will wait for a client connection. When a connection
+is received, the server will do several things:
+(1) Establish a GSS-API context with the client example
+(2) Receive and unwrap a wrapped message from the client
+(3) Generate and send a signature block for the received message 
+
+===========================================================================
+LICENSES:
+
+MIT Kerberos Libraries: ---------------------------------------------------
+
+ * Copyright 1990, 2008 by the Massachusetts Institute of Technology.
+ * All Rights Reserved.
+ *
+ * Export of this software from the United States of America may
+ *   require a specific license from the United States Government.
+ *   It is the responsibility of any person or organization contemplating
+ *   export to obtain such a license before exporting.
+ *
+ * WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
+ * distribute this software and its documentation for any purpose and
+ * without fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright notice and
+ * this permission notice appear in supporting documentation, and that
+ * the name of M.I.T. not be used in advertising or publicity pertaining
+ * to distribution of the software without specific, written prior
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is" without express
+ * or implied warranty.
+
+===========================================================================
+SUPPORT:
+
+If you have any questions or comments, please contact
+support@yassl.com or the MIT Kerberos community.
+
+
+January 25, 2012
+
