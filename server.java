@@ -69,7 +69,7 @@ class server implements gsswrapperConstants
         }
 
         System.out.println("Started Java GSS-API server example, " +
-                "waiting for client connection...");
+                           "waiting for client connection...");
 
         while(true)
         {
@@ -102,21 +102,21 @@ class server implements gsswrapperConstants
 
                     if (ret == 0) {
                         System.out.println("Finished first communication " +
-                                "with server");
+                                           "with server");
                         /* Using gss_unseal / gss_sign */
                         ret = AltCommunicate(clientSocket, clientIn,
-                                clientOut);
+                                             clientOut);
 
                         if (ret == 0) {
                             System.out.println("Finished second " +
-                                    "communication with server");
+                                               "communication with server");
                         } else {
                             System.out.println("Failed during second " +
-                                    "communication with server");
+                                               "communication with server");
                         }
                     } else {
                         System.out.println("Failed during first " +
-                                "communication with server");
+                                           "communication with server");
                     }
                 } else {
                     System.out.println("Failed during Authentication");
@@ -136,7 +136,7 @@ class server implements gsswrapperConstants
                         context, output_token);
                 if (maj_status != GSS_S_COMPLETE) {
                     Util.displayError("deleting security context", 
-                            min_status, maj_status);
+                                      min_status, maj_status);
                 }
             } else {
                 System.out.println("FAILURE!");
@@ -164,7 +164,7 @@ class server implements gsswrapperConstants
 
         if (maj_status != GSS_S_COMPLETE) {
                 Util.displayError("gss_import_name, serviceName", 
-                        min_status, maj_status);
+                                  min_status, maj_status);
                 return null;
         }
 
@@ -174,7 +174,7 @@ class server implements gsswrapperConstants
                 server_creds, null, time_rec);
         if (maj_status != GSS_S_COMPLETE) {
                 Util.displayError("gss_acquire_cred(server_name)", 
-                        min_status, maj_status);
+                                  min_status, maj_status);
                 return null;
         }
 
@@ -214,19 +214,16 @@ class server implements gsswrapperConstants
 
             if (inputTokenBuffer != null) {
                 /* Set up input buffers for the next run through the loop */
-                System.out.println("... A");
                 gsswrapper.setDescArray(inputToken, inputTokenBuffer);
-                System.out.println("... B");
                 inputToken.setLength(inputTokenBuffer.length);
-                System.out.println("... C");
 
                 System.out.println("inputToken.value = " 
-                        + inputToken.getValue());
+                                   + inputToken.getValue());
                 System.out.println("inputToken.length = " 
-                        + inputToken.getLength());
+                                   + inputToken.getLength());
             } else {
                 System.out.println("Got bad token from client, " +
-                        "check client for error description.");
+                                   "check client for error description.");
                 return -1;
             }
 
@@ -260,7 +257,7 @@ class server implements gsswrapperConstants
                     byte[] temp_token = new byte[(int)outputToken.getLength()];
                     temp_token = gsswrapper.getDescArray(outputToken);
                     System.out.println("temp_token.length = " 
-                            + temp_token.length);
+                                       + temp_token.length);
 
                     err = Util.WriteToken(clientOut, temp_token);
                     if (err != 0) {
@@ -268,9 +265,9 @@ class server implements gsswrapperConstants
                     }
 
                     System.out.println("outputToken.value = " 
-                            + outputToken.getValue());
+                                       + outputToken.getValue());
                     System.out.println("outputToken.length = " 
-                            + outputToken.getLength());
+                                       + outputToken.getLength());
 
                     /* free the output token */
                     gsswrapper.gss_release_buffer(min_status, outputToken);
@@ -326,7 +323,7 @@ class server implements gsswrapperConstants
 
             if (maj_status != GSS_S_COMPLETE) {
                 Util.displayError("unwrapping token, gss_unwrap", 
-                        min_status, maj_status);
+                                  min_status, maj_status);
                 return -1;
             } else if (conf_state[0] == 0) {
                 System.out.println("Warning!  Message not encrypted.");
@@ -341,7 +338,7 @@ class server implements gsswrapperConstants
 
             if (maj_status != GSS_S_COMPLETE) {
                 Util.displayError("producing signature block, gss_get_mic", 
-                        min_status, maj_status);
+                                  min_status, maj_status);
                 return -1;
             }
 
@@ -377,7 +374,6 @@ class server implements gsswrapperConstants
         gss_buffer_desc mic_buf = new gss_buffer_desc();
         byte[] messageBuffer = null;
 
-
             /* Receive the message token */
             messageBuffer = Util.ReadToken(clientIn);
 
@@ -392,7 +388,7 @@ class server implements gsswrapperConstants
 
             if (maj_status != GSS_S_COMPLETE) {
                 Util.displayError("unwrapping token, gss_unseal", 
-                        min_status, maj_status);
+                                  min_status, maj_status);
                 return -1;
             } else if (conf_state[0] == 0) {
                 System.out.println("Warning!  Message not encrypted.");
@@ -407,7 +403,7 @@ class server implements gsswrapperConstants
 
             if (maj_status != GSS_S_COMPLETE) {
                 Util.displayError("producing signature block, gss_sign", 
-                        min_status, maj_status);
+                                  min_status, maj_status);
                 return -1;
             }
 

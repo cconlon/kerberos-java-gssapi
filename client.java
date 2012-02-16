@@ -83,7 +83,7 @@ public class client implements gsswrapperConstants
 
         if (maj_status != GSS_S_COMPLETE) {
             Util.errorExit("Error calling gss_oid_to_str", 
-                    min_status, maj_status);
+                           min_status, maj_status);
         }
         gsswrapper.gss_release_buffer(min_status, buffer);
 
@@ -106,7 +106,7 @@ public class client implements gsswrapperConstants
 
         /* Stores created context in global static "context" variable */
         ret = Authenticate(clientSocket, serverIn, serverOut, clientName, 
-                serviceName, neg_mech_set);
+                           serviceName, neg_mech_set);
 
         if (ret == 0) {
             System.out.println("Finished Authentication");
@@ -117,20 +117,20 @@ public class client implements gsswrapperConstants
 
                 if (ret == 0) {
                     System.out.println("Finished first communication with " + 
-                            "server");
+                                       "server");
                     ret = AltCommunicate(clientSocket, serverIn, serverOut);
 
                     if (ret == 0) {
                         System.out.println("Finished second communication " + 
-                                "with server");
+                                           "with server");
                         ret = MiscFunctionTests();
                     } else {
                         System.out.println("Failed during second " +
-                                "communication with server");
+                                           "communication with server");
                     }
                 } else {
                     System.out.println("Failed during first communication " +
-                            "with server");
+                                       "with server");
                 }
             } else {
                 System.out.println("Failed during PrintContextInfo()");
@@ -148,7 +148,7 @@ public class client implements gsswrapperConstants
 
             if (maj_status != GSS_S_COMPLETE) {
                 Util.displayError("deleting security context", 
-                        min_status, maj_status);
+                                  min_status, maj_status);
             }
 
             gsswrapper.gss_release_buffer(min_status, output_token);
@@ -193,14 +193,14 @@ public class client implements gsswrapperConstants
         maj_status = gsswrapper.gss_indicate_mechs(min_status, mech_set);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError("gss_indicate_mechs(mech_set)", min_status,
-                    maj_status);
+                              maj_status);
             return -1;
         }
 
         maj_status = gsswrapper.gss_release_oid_set(min_status, mech_set);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError("gss_release_mechs(mech_set)", min_status,
-                    maj_status);
+                              maj_status);
             return -1;
         }
 
@@ -216,7 +216,7 @@ public class client implements gsswrapperConstants
                     gsswrapper.getGSS_C_NT_USER_NAME(), clientName);
             if (maj_status != GSS_S_COMPLETE) {
                 Util.displayError("gss_import_name(inClientName)", min_status,
-                        maj_status);
+                                  maj_status);
                 return -1;
             }
 
@@ -227,7 +227,7 @@ public class client implements gsswrapperConstants
                     null, time_rec);
             if (maj_status != GSS_S_COMPLETE) {
                 Util.displayError("gss_acquire_cred", min_status,
-                        maj_status);
+                                  maj_status);
                 gsswrapper.gss_release_cred(min_status, clientCredentials);
                 return -1;
             }
@@ -240,7 +240,7 @@ public class client implements gsswrapperConstants
 
                 if (maj_status != GSS_S_COMPLETE) {
                     Util.displayError("setting negotiation mechanism", 
-                            min_status, maj_status);
+                                      min_status, maj_status);
                     return -1;
                 } else {
                     System.out.println("Successfully set neg. mechanism");
@@ -258,14 +258,14 @@ public class client implements gsswrapperConstants
                 clientCredentials, name, lifetime, cred_usage, temp_mech_set);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError("gss_inquire_cred(temp_mech_set)", min_status,
-                    maj_status);
+                              maj_status);
             return -1;
         }
         maj_status = gsswrapper.gss_release_oid_set(min_status,
                 temp_mech_set);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError("gss_release_oid_set(temp_mech_set)", min_status,
-                    maj_status);
+                              maj_status);
             return -1;
         }
 
@@ -275,7 +275,7 @@ public class client implements gsswrapperConstants
                 clientName, clientName_dup);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError("duplicating client name", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         }
         gsswrapper.gss_release_name(min_status, clientName_dup);
@@ -286,7 +286,7 @@ public class client implements gsswrapperConstants
                 clientName, gss_mech_krb5, clientCanonicalized);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError("canonicalizing client name", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         }
 
@@ -314,7 +314,7 @@ public class client implements gsswrapperConstants
                    gsswrapper.getGSS_C_NT_HOSTBASED_SERVICE(), serverName);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError("gss_import_name(inServiceName)", min_status,
-                    maj_status);
+                              maj_status);
             return -1;
         }
 
@@ -358,7 +358,7 @@ public class client implements gsswrapperConstants
                 byte[] temp_token = new byte[(int)outputToken.getLength()];
                 temp_token = gsswrapper.getDescArray(outputToken);
                 System.out.println("Generated Token Length = " + 
-                        temp_token.length);
+                                   temp_token.length);
                 err = Util.WriteToken(serverOut, temp_token);
 
                 /* free the output token */
@@ -370,7 +370,7 @@ public class client implements gsswrapperConstants
                     
                     /* Protocol requires another packet exchange */
                     System.out.println("Protocol requires another " + 
-                            "packet exchange");
+                                       "packet exchange");
 
                     /* Clean up old input buffer */
                     if (inputTokenBuffer != null)
@@ -383,11 +383,11 @@ public class client implements gsswrapperConstants
                         gsswrapper.setDescArray(inputToken, inputTokenBuffer);
                         inputToken.setLength(inputTokenBuffer.length);
                         System.out.println("Received Token Length = " + 
-                                inputToken.getLength());
+                                           inputToken.getLength());
                     }
                 } else if (maj_status != GSS_S_COMPLETE) {
                     Util.displayError("gss_init_sec_context", 
-                            min_status, maj_status);
+                                      min_status, maj_status);
                     return -1;
                 }
             }
@@ -431,7 +431,7 @@ public class client implements gsswrapperConstants
 
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError("wrapping message, gss_wrap", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         } else if (state[0] == 0) {
             System.out.println("Warning!  Message not encrypted.");
@@ -443,7 +443,7 @@ public class client implements gsswrapperConstants
         err = Util.WriteToken(serverOut, temp_token);
         if (err != 0) {
             System.out.println("Error sending wrapped message to " +
-                    "server, WriteToken");
+                               "server, WriteToken");
             return -1;
         }
        
@@ -461,7 +461,7 @@ public class client implements gsswrapperConstants
 
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError("verifying signature, gss_verify_mic", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         } else {
             System.out.println("Signature Verified");
@@ -493,7 +493,7 @@ public class client implements gsswrapperConstants
                 context, context_token);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError("exporting security context", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         } else {
             System.out.println("Successfully exported security context");
@@ -503,7 +503,7 @@ public class client implements gsswrapperConstants
                 context_token, context);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError("importing security context", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         } else {
             System.out.println("Successfully imported security context");
@@ -517,7 +517,7 @@ public class client implements gsswrapperConstants
 
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError("wrapping message, gss_seal", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         } else if (state[0] == 0) {
             System.out.println("Warning!  Message not encrypted.");
@@ -529,7 +529,7 @@ public class client implements gsswrapperConstants
         err = Util.WriteToken(serverOut, temp_token);
         if (err != 0) {
             System.out.println("Error sending wrapped message to " +
-                    "server, WriteToken");
+                               "server, WriteToken");
             return -1;
         }
        
@@ -547,7 +547,7 @@ public class client implements gsswrapperConstants
 
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError("verifying signature, gss_verify", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         } else {
             System.out.println("Signature Verified");
@@ -590,7 +590,7 @@ public class client implements gsswrapperConstants
                 is_local, is_open);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError("Inquiring context:  gss_inquire_context", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         }
 
@@ -598,7 +598,7 @@ public class client implements gsswrapperConstants
         maj_status = gsswrapper.gss_context_time(min_status, context, time_rec);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError("checking for valid context", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         }
 
@@ -607,7 +607,7 @@ public class client implements gsswrapperConstants
                 src_name, sname, name_type);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError("Displaying source name:  gss_display_name", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         }
 
@@ -616,20 +616,20 @@ public class client implements gsswrapperConstants
                 targ_name, tname, name_type);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError("Displaying target name:  gss_display_name", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         }
 
         System.out.println("------------- Context Information ---------------");
         System.out.println("Context is Valid for another " 
-                + time_rec[0] + " seconds");
+                           + time_rec[0] + " seconds");
         System.out.println(sname.getValue() + " to " + tname.getValue());
         System.out.println("Lifetime: " + lifetime[0] + " seconds");
         System.out.println("Flags: " + context_flags[0]);
         System.out.println("Initiated: " + ((is_local[0] == 1) 
-                    ? "locally" : "remotely"));
+                           ? "locally" : "remotely"));
         System.out.println("Status: " + ((is_open[0] == 1) 
-                    ? "open" : "closed"));
+                           ? "open" : "closed"));
 
         gsswrapper.gss_release_name(min_status, src_name);
         gsswrapper.gss_release_name(min_status, targ_name);
@@ -640,7 +640,7 @@ public class client implements gsswrapperConstants
                 name_type, oid_name);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError("Converting oid->string:  gss_oid_to_str", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         }
 
@@ -652,7 +652,7 @@ public class client implements gsswrapperConstants
                 mechanism, mech_attrs, known_attrs);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError("Inquiring mechanism attributes", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         }
         System.out.println("  Mechanism Attributes:");
@@ -666,7 +666,7 @@ public class client implements gsswrapperConstants
                     mech_attrs.getElement(j), name, short_desc, long_desc);
             if (maj_status != GSS_S_COMPLETE) {
                 Util.displayError("Displaying mechanism attributes", 
-                        min_status, maj_status);
+                                  min_status, maj_status);
                 return -1;
             }
             System.out.println("    " + name.getValue());
@@ -687,7 +687,7 @@ public class client implements gsswrapperConstants
                     known_attrs.getElement(k), name, short_desc, long_desc);
             if (maj_status != GSS_S_COMPLETE) {
                 Util.displayError("Displaying known attributes", 
-                        min_status, maj_status);
+                                  min_status, maj_status);
                 return -1;
             }
             System.out.println("    " + name.getValue());
@@ -704,7 +704,7 @@ public class client implements gsswrapperConstants
                 mechanism, mech_names);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError("Inquiring mech names", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         }
 
@@ -712,19 +712,19 @@ public class client implements gsswrapperConstants
                 mechanism, oid_name);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError("Converting oid->string", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         }
 
         System.out.println("Mechanism " + oid_name.getValue() 
-                + " supports " + mech_names.getCount() + " names");
+                           + " supports " + mech_names.getCount() + " names");
         for (int i = 0; i < mech_names.getCount(); i++)
         {
             maj_status = gsswrapper.gss_oid_to_str(min_status, 
                     mech_names.getElement(i), oid_name);
             if (maj_status != GSS_S_COMPLETE) {
                 Util.displayError("Converting oid->string", 
-                        min_status, maj_status);
+                                  min_status, maj_status);
                 return -1;
             }
             System.out.println("  " + i + ": " + oid_name.getValue());
@@ -737,7 +737,7 @@ public class client implements gsswrapperConstants
                 mechanism, sasl_mech_name, mech_name, mech_description);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError("Inquiring SASL name", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         }
         System.out.println("SASL mech: " + sasl_mech_name.getValue());
@@ -749,7 +749,7 @@ public class client implements gsswrapperConstants
                 sasl_mech_name, oid);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError("Inquiring mechs for SASL name", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         }
 
@@ -765,11 +765,11 @@ public class client implements gsswrapperConstants
                 100, max_size);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError("determining largest wrapped message size",
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         } else {
             System.out.println("Largest message size able to be wrapped: " 
-                    + max_size[0]);
+                               + max_size[0]);
         }
 
         gsswrapper.gss_release_buffer(min_status, sasl_mech_name);
@@ -805,15 +805,15 @@ public class client implements gsswrapperConstants
                 accept_lifetime, cred_usage);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError("inquiring credential info from mech", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         } else {
             System.out.println("Credential Principal Name: " 
-                    + name.getExternal_name().getValue());
+                               + name.getExternal_name().getValue());
             System.out.println("Credential Valid for Initiating Contexts for " 
-                    + init_lifetime[0] + " seconds");
+                               + init_lifetime[0] + " seconds");
             System.out.println("Credential Valid for Accepting Contexts for " 
-                    + accept_lifetime[0] + " seconds");
+                               + accept_lifetime[0] + " seconds");
             System.out.println("Credential Usage: " + cred_usage[0]);
         }
 
@@ -825,7 +825,7 @@ public class client implements gsswrapperConstants
                 context, 0, prf_in, 19, prf_out);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError("testing gss_pseudo_random function", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         }
 
@@ -842,7 +842,7 @@ public class client implements gsswrapperConstants
                 mechs);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError("gss_indicate_mechs_by_attrs", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         }
 

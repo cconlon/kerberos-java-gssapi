@@ -4,6 +4,10 @@
 # Description: This shell script generates the Java GSS-API interface for 
 #              the MIT Kerberos libraries and compiles the example client 
 #              and server applications.
+
+# Notes: The paths to Java and Kerberos locations should be updated to match
+#        the setup of the development machine which this script is being run
+#        on.
 #
 # Original source developed by yaSSL (http://www.yassl.com)
 # 
