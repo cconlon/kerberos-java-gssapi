@@ -43,7 +43,8 @@ REQUIREMENTS:
 
 You must have SWIG installed on your development machine in order to
 generate this GSS-API wrapper. To download and install SWIG, please see
-the project homepage at http://www.swig.org/.
+the project homepage at http://www.swig.org/. This project has been developed
+using SWIG versions 1.3.31 (Mac) and 1.3.40 (Linux).
 
 To use this interface in your Android NDK application, you need to
 include cross-compiled versions of the MIT Kerberos libraries for Android
@@ -59,7 +60,7 @@ platform. More detailed instructions can be found in the script comments.
 ===========================================================================
 WRAPPER DESIGN:
 
-This wrapper is comprised of a few files which are used by SWIG to generate 
+This wrapper contains a few files which are used by SWIG to generate 
 the Java GSS-API interface, namely:
 
 gsswrapper.i
@@ -78,8 +79,8 @@ should be updated to match accordingly.
 ===========================================================================
 BUILDING:
 
-The Java GSS-API interface can be built either for use in an Android
-NDK application or for use on a standard desktop environment.
+The Java GSS-API interface can be built for use in an Android NDK application 
+or for use on a standard desktop environment.
 
 Android NDK
 -----------
@@ -129,10 +130,19 @@ To build this wrapper for use with the Android NDK:
 
 Desktop Environment
 -------------------
-To build both the interface and examples on a desktop environment, 
+To build the GSS-API interface and examples on a desktop environment, 
 
 (1) cd to the directory containing gsswrapper.i and edit the JavaBuild.sh file 
-    to match your system's Java and Kerberos configuration. 
+    to match your system's Java and Kerberos configuration.
+    
+    NOTE: If building on OS X, the Java include directory will most likely be
+    something similar to:
+
+    /System/Library/Frameworks/JavaVM.framework/Versions/A/Headers
+
+    For OS X, you'll also need to change the extension of the shared library
+    being compiled by SWIG to .dylib (libgsswrapper.dylib) instead of .so
+    which is used by standard Linux environments.
 
 (2) Verify that the library being loaded by the SWIG wrapper (gsswrapper.i)
     is the correct one. This should be the name of the library being created
@@ -140,16 +150,21 @@ To build both the interface and examples on a desktop environment,
 
 (3) Run ./JavaBuild.sh
     
-    This will run the correct SWIG command, create libgsswrapper.so as well
-    as generate and compile all the necessary JNI and Java files needed
-    for the interface and examples.
+    This will run the correct SWIG command, create libgsswrapper.so (.dylib) 
+    as well as generate and compile all the necessary JNI and Java files 
+    needed for the interface and examples.
 
 (4) Set LD_LIBRARY_PATH to include paths to the MIT Kerberos libraries on
     your system as well as the location of the SWIG-generated library.
     For example, something similar to:
 
+    Linux:
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib:
         /home/myuser/kerberos-java-gssapi/
+
+    Mac:
+    export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/usr/local/lib:
+        /Users/myuser/kerberos-java-gssapi/
 
 ===========================================================================
 INTERFACE USAGE:
