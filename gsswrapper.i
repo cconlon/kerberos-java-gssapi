@@ -1,4 +1,3 @@
-
 /* -*- mode: c; c-basic-offset: 4; indent-tabs-mode: nil -*- */
 /* gsswrapper.i - GSS-API SWIG Java wrapper interface file */
 /* 
