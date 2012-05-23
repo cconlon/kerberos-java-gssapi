@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<!-- build file for MIT Kerberos Java GSS-API bindings" -->
+<project name="kerberos-java-gssapi" default="build" basedir=".">
+
+    <!-- default value useful for dev environment-->
+    <property name="lib.dir" value="lib/"/>
+    <property name="src.dir" value="src/java/"/>
+    <property name="build.dir" value="build"/>
+    <property name="examples.dir" value="examples/"/>
+    <property name="examples.build.dir" value="examples/build"/>
+    <property name="swiggen.dir" value="src/java/edu/mit/jgss/swig"/>
+    <property name="swignative.dir" value="native"/>
+
+    <path id="classpath">
+      <fileset dir="${lib.dir}" includes="*.jar">
+        <include name="kerberos-java-gssapi.jar"/>
+      </fileset>
+    </path>
+
+    <target name="init" depends="clean, default-javac-flags">
+      <mkdir dir="${build.dir}"/>
+      <mkdir dir="${lib.dir}"/>
+      <mkdir dir="${examples.build.dir}"/>
+    </target>
+
+    <target name="clean">
+      <delete dir="${build.dir}"/>
+      <delete dir="${lib.dir}"/>
+      <delete dir="${examples.build.dir}"/>
+    </target>
+
+    <target name="cleanswig">
+      <delete>
+        <fileset dir="${swiggen.dir}" includes="*.java"/>
+        <fileset dir="${swignative.dir}" includes="gsswrapper_wrap.o,gsswrapper_wrap.c,libgsswrapper.so,libgsswrapper.dylib"/>
+      </delete>
+    </target>
+
+    <target name="build" depends="init, compile, jar, examples"/>
+
+    <target name="compile">
+      <javac
+       srcdir="${src.dir}"
+       destdir="${build.dir}"
+       debug="${java.debug}"
+       debuglevel="${java.debuglevel}"
+       deprecation="${java.deprecation}"
+       optimize="${java.optimize}"
+       source="${java.source}"
+       target="${java.target}"
+       classpathref="classpath"
+       includeantruntime="false" />
+    </target>
+
+    <target name="default-javac-flags"
+            description="Set the javac flags that will produce a debug jar with no compiler optimisation and all debug symbols" >
+      <property name="java.debug" value="true"/>
+      <property name="java.debuglevel" value="source,lines,vars"/>
+      <property name="java.deprecation" value="false"/>
+      <property name="java.optimize" value="false"/>
+      <property name="java.source" value="1.5"/>
+      <property name="java.target" value="1.5"/>
+    </target>
+
+    <target name="jar">
+      <jar jarfile="${lib.dir}/kerberos-java-gssapi.jar" basedir="${build.dir}">
+      </jar>
+    </target>
+
+    <target name="examples">
+      <javac
+       srcdir="${examples.dir}"
+       destdir="${examples.build.dir}"
+       debug="${java.debug}"
+       debuglevel="${java.debuglevel}"
+       deprecation="${java.deprecation}"
+       optimize="${java.optimize}"
+       source="${java.source}"
+       target="${java.target}"
+       classpathref="classpath"
+       includeantruntime="false" />
+    </target>
+
+</project>
