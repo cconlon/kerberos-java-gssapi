@@ -86,7 +86,7 @@
      * value by Java. Requires gss_buffer_desc as input.
      */
     JNIEXPORT jbyteArray JNICALL 
-    Java_edu_mit_kerberos_gsswrapperJNI_getDescArray(JNIEnv *jenv, 
+    Java_edu_mit_jgss_swig_gsswrapperJNI_getDescArray(JNIEnv *jenv, 
             jclass jcls, jlong jarg1, jobject jarg1_) 
     {
         jbyteArray newArray = 0 ;
@@ -109,7 +109,7 @@
      * gss_buffer_t object using a Java byte[] as input.
      */
     JNIEXPORT jint JNICALL 
-    Java_edu_mit_kerberos_gsswrapperJNI_setDescArray(JNIEnv *jenv, jclass jcls,
+    Java_edu_mit_jgss_swig_gsswrapperJNI_setDescArray(JNIEnv *jenv, jclass jcls,
             jlong jarg1, jobject jarg1_, jbyteArray jarg2) 
     {
         jint jresult = 0 ;
@@ -347,7 +347,7 @@ typedef unsigned int uint32_t;  /* for SWIG convienence */
     /* Convert Java gss_OID_set_desc *to C gss_OID_set * */
     if ($input != NULL) {
         jclass clazz = (*jenv)->FindClass(jenv, 
-                "edu/mit/kerberos/gss_OID_set_desc");
+                "edu/mit/jgss/swig/gss_OID_set_desc");
         jfieldID fid = (*jenv)->GetFieldID(jenv, clazz, "swigCPtr", "J");
         jlong cPtr = (*jenv)->GetLongField(jenv, $input, fid);
 
@@ -361,7 +361,7 @@ typedef unsigned int uint32_t;  /* for SWIG convienence */
     if ($input != NULL) {
         /* Copy back temporary struct to gss_OID_set_desc Java class */
         jclass clazz = (*jenv)->FindClass(jenv, 
-                "edu/mit/kerberos/gss_OID_set_desc");
+                "edu/mit/jgss/swig/gss_OID_set_desc");
         jfieldID fid = (*jenv)->GetFieldID(jenv, clazz, "swigCPtr", "J");
         jlong cPtr = 0;
         cPtr = (long) *$1;
@@ -383,7 +383,7 @@ typedef unsigned int uint32_t;  /* for SWIG convienence */
     /* Convert incoming Java gss_OID_desc to a native gss_OID pointer */
     if ($input != NULL) {
         jclass clazz = (*jenv)->FindClass(jenv, 
-                "edu/mit/kerberos/gss_OID_desc");
+                "edu/mit/jgss/swig/gss_OID_desc");
         jfieldID fid = (*jenv)->GetFieldID(jenv, clazz, "swigCPtr", "J");
         
         /* Get pointer to gss_OID_desc */
@@ -397,7 +397,7 @@ typedef unsigned int uint32_t;  /* for SWIG convienence */
     /* Convert outgoing native gss_OID * to Java gss_OID_desc (gss_OID **) */
     if ($input != NULL) {
         jclass clazz = (*jenv)->FindClass(jenv, 
-                "edu/mit/kerberos/gss_OID_desc");
+                "edu/mit/jgss/swig/gss_OID_desc");
         jfieldID fid = (*jenv)->GetFieldID(jenv, clazz, "swigCPtr", "J");
         jlong cPtr = 0;
         cPtr = (long) *$1;
@@ -420,7 +420,7 @@ typedef unsigned int uint32_t;  /* for SWIG convienence */
        gss_ctx_id_t pointer */
     if ($input != NULL) {
         jclass clazz = (*jenv)->FindClass(jenv, 
-                "edu/mit/kerberos/gss_ctx_id_t_desc");
+                "edu/mit/jgss/swig/gss_ctx_id_t_desc");
         jfieldID fid = (*jenv)->GetFieldID(jenv, clazz, "swigCPtr", "J");
 
         /* Get pointer to gss_ctx_id_t_desc */
@@ -434,7 +434,7 @@ typedef unsigned int uint32_t;  /* for SWIG convienence */
     /* Convert outgoing native gss_ctx_id_t * to Java gss_ctx_id_t_desc */
     if ($input != NULL) {
         jclass clazz = (*jenv)->FindClass(jenv, 
-                "edu/mit/kerberos/gss_ctx_id_t_desc");
+                "edu/mit/jgss/swig/gss_ctx_id_t_desc");
         jfieldID fid = (*jenv)->GetFieldID(jenv, clazz, "swigCPtr", "J");
         jlong cPtr = 0;
         cPtr = (long) *$1;
@@ -457,7 +457,7 @@ typedef unsigned int uint32_t;  /* for SWIG convienence */
        gss_cred_id_t pointer */
     if ($input != NULL) {
         jclass clazz = (*jenv)->FindClass(jenv, 
-                "edu/mit/kerberos/gss_cred_id_t_desc");
+                "edu/mit/jgss/swig/gss_cred_id_t_desc");
         jfieldID fid = (*jenv)->GetFieldID(jenv, clazz, "swigCPtr", "J");
         
         /* Get pointer to gss_cred_id_t_desc */
@@ -471,7 +471,7 @@ typedef unsigned int uint32_t;  /* for SWIG convienence */
     /* Convert outgoing native gss_cred_id_t * to Java gss_cred_id_t_desc */
     if ($input != NULL) {
         jclass clazz = (*jenv)->FindClass(jenv, 
-                "edu/mit/kerberos/gss_cred_id_t_desc");
+                "edu/mit/jgss/swig/gss_cred_id_t_desc");
         jfieldID fid = (*jenv)->GetFieldID(jenv, clazz, "swigCPtr", "J");
         jlong cPtr = 0;
         cPtr = (long) *$1;
@@ -498,7 +498,7 @@ typedef unsigned int uint32_t;  /* for SWIG convienence */
        native gss_channel_bindings_t pointer */
     if ($input != NULL) {
         jclass clazz = (*jenv)->FindClass(jenv, 
-                "edu/mit/kerberos/gss_channel_bindings_struct");
+                "edu/mit/jgss/swig/gss_channel_bindings_struct");
         jfieldID fid = (*jenv)->GetFieldID(jenv, clazz, "swigCPtr", "J");
 
         /* Get pointer to gss_channel_bindings_struct */
@@ -513,7 +513,7 @@ typedef unsigned int uint32_t;  /* for SWIG convienence */
        Java gss_channel_bindings_struct */
     if ($input != NULL) {
         jclass clazz = (*jenv)->FindClass(jenv, 
-                "edu/mit/kerberos/gss_channel_bindings_struct");
+                "edu/mit/jgss/swig/gss_channel_bindings_struct");
         jfieldID fid = (*jenv)->GetFieldID(jenv, clazz, "swigCPtr", "J");
         jlong cPtr = 0;
         cPtr = (long) *$1;
@@ -538,7 +538,7 @@ typedef unsigned int uint32_t;  /* for SWIG convienence */
     /* Convert incoming Java gss_name_t_desc to a native gss_name_t pointer */
     if ($input != NULL) {
         jclass clazz = (*jenv)->FindClass(jenv, 
-                "edu/mit/kerberos/gss_name_t_desc");
+                "edu/mit/jgss/swig/gss_name_t_desc");
         jfieldID fid = (*jenv)->GetFieldID(jenv, clazz, "swigCPtr", "J");
         
         /* Get pointer to gss_name_t_desc */
@@ -552,7 +552,7 @@ typedef unsigned int uint32_t;  /* for SWIG convienence */
     /* Convert outgoing native gss_name_t * to Java gss_name_t_desc */
     if ($input != NULL) {
         jclass clazz = (*jenv)->FindClass(jenv, 
-                "edu/mit/kerberos/gss_name_t_desc");
+                "edu/mit/jgss/swig/gss_name_t_desc");
         jfieldID fid = (*jenv)->GetFieldID(jenv, clazz, "swigCPtr", "J");
         jlong cPtr = 0;
         cPtr = (long) *$1;
