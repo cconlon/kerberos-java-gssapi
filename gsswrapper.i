@@ -404,6 +404,12 @@ typedef unsigned int uint32_t;  /* for SWIG convienence */
     }
 }
 %typemap(javain) gss_OID * "$javainput"
+%typemap(javacode) gss_OID_desc %{
+   public int hashCode() {
+       return (int)swigCPtr;
+   }
+%}
+
 
 /* 
  * TYPEMAP:  gss_ctx_id_t * (native) <--> gss_ctx_id_t_desc (Java)

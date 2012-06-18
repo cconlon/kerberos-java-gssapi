@@ -10,23 +10,34 @@
     <property name="examples.build.dir" value="examples/build"/>
     <property name="swiggen.dir" value="src/java/edu/mit/jgss/swig"/>
     <property name="swignative.dir" value="native"/>
+    <property name="test.dir" value="src/test/"/>
+    <property name="test.build.dir" value="build/test"/>
 
     <path id="classpath">
       <fileset dir="${lib.dir}" includes="*.jar">
         <include name="kerberos-java-gssapi.jar"/>
       </fileset>
+      <fileset dir="${test.dir}" includes="*.jar">
+        <include name="junit-4.10.jar"/>
+      </fileset>
+      <fileset dir="/usr/share/java/" includes="ant-junit.jar" />
     </path>
 
     <target name="init" depends="clean, default-javac-flags">
       <mkdir dir="${build.dir}"/>
       <mkdir dir="${lib.dir}"/>
       <mkdir dir="${examples.build.dir}"/>
+      <mkdir dir="${test.build.dir}"/>
     </target>
 
     <target name="clean">
+      <delete dir="${test.build.dir}"/>
       <delete dir="${build.dir}"/>
       <delete dir="${lib.dir}"/>
       <delete dir="${examples.build.dir}"/>
+      <delete>
+        <fileset dir="." includes="TEST-*" />
+      </delete>
     </target>
 
     <target name="cleanswig">
@@ -36,7 +47,7 @@
       </delete>
     </target>
 
-    <target name="build" depends="init, compile, jar, examples"/>
+    <target name="build" depends="init, compile, jar, examples, test"/>
 
     <target name="compile">
       <javac
@@ -79,6 +90,36 @@
        target="${java.target}"
        classpathref="classpath"
        includeantruntime="false" />
+    </target>
+
+    <target name="build-test">
+      <javac
+       srcdir="${test.dir}"
+       destdir="${test.build.dir}"
+       debug="${java.debug}"
+       debuglevel="${java.debuglevel}"
+       deprecation="${java.depreciation}"
+       optimize="${java.optimize}"
+       source="${java.source}"
+       target="${java.target}"
+       classpathref="classpath"
+       includeantruntime="false" />
+    </target>
+
+    <target name="test" depends="build-test">
+      <junit printsummary="yes" showoutput="yes" haltonfailure="yes">
+        <formatter type="plain"/>
+        <classpath>
+          <pathelement location="test/junit-4.10.jar" />
+          <pathelement location="build/" />
+          <pathelement location="build/test" />
+        </classpath>
+        <batchtest fork="yes">
+          <fileset dir="${test.dir}">
+            <include name="**/*Test*.java"/>
+          </fileset>
+        </batchtest>
+      </junit>
     </target>
 
 </project>
