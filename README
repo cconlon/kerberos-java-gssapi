@@ -142,6 +142,29 @@ To build the GSS-API interface and examples on a desktop environment,
     ant cleanswig
 
 ===========================================================================
+NOTES:
+
+(1) Because the org.ietf.jgss package already exists on most desktop Java
+    installations, it is necessary to set the bootclasspath variable when
+    running applications built with MIT's org.ietf.jgss package. To see an
+    example of this, please reference the test example scripts in ./examples
+    (ie server.sh, client.sh).
+
+    When using the bootclasspath, the MIT org.ietf.jgss classes are treated
+    as system classes. All system classes will only lookup shared libraries
+    in $JAVA_HOME/bin. As such, one of several actions needs to be done
+    when using this package with bootclasspath:
+
+    a) Install gsswrapper.so library into $JAVA_HOME/bin
+    b) Set the sun.boot.library.path to include the gsswrapper.so library
+       path. The syntax is:
+
+       java -Dsun.boot.library.path=$JAVA_HOME/bin:/path/to/gsswrapper.so
+
+    The need to use bootclasspath should not be necessary on Android, as
+    the platform doesn't have an existing org.ietf.jgss package installed.
+
+===========================================================================
 LICENSES:
 
 MIT Kerberos Libraries: ---------------------------------------------------

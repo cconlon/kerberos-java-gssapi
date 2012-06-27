@@ -1,17 +1,16 @@
 package org.ietf.jgss;
 
-import java.io.InputStream;
 import java.util.regex.*;
+import java.io.*;
+
 import edu.mit.jgss.swig.gss_OID_desc;
+import edu.mit.jgss.OidUtil;
 
 public class Oid {
 
     private gss_OID_desc oid;
     private byte[] derOid;
     
-    // Pattern to match '.' separated Oid string format
-    private Pattern oidPattern = Pattern.compile("^([1-9]+.{1})+[1-9]+$");
-
     /**
      * Creates a new Oid object from a string representation of the Oid's
      * integer components (e.g., "1.2.840.113554.1.2.2").
@@ -20,9 +19,9 @@ public class Oid {
      */
     public Oid(String strOid) throws GSSException {
 
-        Matcher oidIN = oidPattern.matcher(strOid);
+        boolean matches = OidUtil.verifyOid(strOid);
         
-        if (oidIN.matches()) {
+        if (matches) {
             this.oid = new gss_OID_desc(strOid);
         } else {
             throw new GSSException(GSSException.FAILURE);
@@ -38,7 +37,23 @@ public class Oid {
      * @param derOid the stream containing the DER-encoded Oid.
      */
     public Oid(InputStream derOid) throws GSSException {
-        // TODO
+
+        if (derOid == null) {
+            throw new NullPointerException();
+        }
+
+        try {
+            String tmpOidStr = OidUtil.OidStream2String(derOid);
+            boolean matches = OidUtil.verifyOid(tmpOidStr);
+
+            if (matches) {
+                this.oid = new gss_OID_desc(tmpOidStr);
+            } else {
+                throw new GSSException(GSSException.FAILURE);
+            }
+        } catch (IOException e) {
+            throw new GSSException(GSSException.FAILURE);
+        }
     }
 
     /**
@@ -50,7 +65,23 @@ public class Oid {
      * @param derOid the byte array containing the DER-encoded Oid.
      */
     public Oid(byte[] derOid) throws GSSException {
-        // TODO
+
+        if (derOid == null) {
+            throw new NullPointerException();
+        }
+        
+        boolean valid = OidUtil.verifyOid(derOid);
+        if (!valid) {
+            throw new GSSException(GSSException.FAILURE);
+        }
+
+        /* Remove tag and length from byte array */
+        byte[] shortDerOid = new byte[derOid.length - 2];
+        for (int i = 0; i < derOid.length-2; i++) {
+            shortDerOid[i] = derOid[i+2];
+        }
+        this.oid = new gss_OID_desc(shortDerOid);
+        this.derOid = derOid;
     }
 
     /**
@@ -61,10 +92,28 @@ public class Oid {
      * notation.
      */
     public String toString() {
-        if (oid != null)
-            return oid.getElements();
-        else
+        if (oid != null) {
+            //return (this.oid).toString();
+
+            /* Get native OID string, { X X ... X } representation */
+            String tmpString = (this.oid).toString();
+            String[] stringArray = tmpString.split(" ");
+
+            /* Convert to dot-separated representation */
+            StringBuilder oidString = new StringBuilder();
+            for (int i = 0; i < stringArray.length; i++) {
+                if (stringArray[i].matches("\\d*")) {
+                    oidString.append(stringArray[i]);
+                    if ((stringArray.length - i) > 2) {
+                        oidString.append(".");
+                    }
+                }
+            }
+            return oidString.toString();
+
+        } else {
             return null;
+        }
     }
 
     /**
@@ -95,7 +144,11 @@ public class Oid {
      * @return full ASN.1 DER encoding for the Oid object.
      */
     public byte[] getDER() {
-        return derOid;
+        if (derOid == null) {
+            this.derOid = OidUtil.OidString2Der(this.toString());
+        }
+        
+        return this.derOid;
     }
 
     /**

@@ -107,6 +107,7 @@
     </target>
 
     <target name="test" depends="build-test">
+      <property name="bootclasspath" refid="classpath" />
       <junit printsummary="yes" showoutput="yes" haltonfailure="yes">
         <formatter type="plain"/>
         <classpath>
@@ -114,6 +115,9 @@
           <pathelement location="build/" />
           <pathelement location="build/test" />
         </classpath>
+        <jvmarg value="-Xbootclasspath/p:${lib.dir}kerberos-java-gssapi.jar" />
+        <sysproperty key="sun.boot.library.path" value="$JAVA_HOME/bin:${swignative.dir}" />
+        <env key="LD_LIBRARY_PATH" path="$LD_LIBRARY_PATH:{swignative.dir}:/usr/local/lib" />
         <batchtest fork="yes">
           <fileset dir="${test.dir}">
             <include name="**/*Test*.java"/>

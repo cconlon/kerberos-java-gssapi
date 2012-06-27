@@ -333,6 +333,46 @@ typedef unsigned int uint32_t;  /* for SWIG convienence */
     return $jnicall;
 }
 
+/*
+ * TYPEMAP: (char * BYTE, int LENGTH) (native) <--> byte[] (Java)
+ * --------------------------------------------------------------
+ *
+ */
+/*%typemap(in) (char * BYTE, int LENGTH) {
+    $1 = (char *) JCALL2(GetByteArrayElements, jenv, $input, 0);
+    $2 = (int)    JCALL1(GetArrayLength, jenv, $input);
+}
+%typemap(jni) (char * BYTE, int LENGTH) "jbyteArray"
+%typemap(jtype) (char * BYTE, int LENGTH) "byte[]"
+%typemap(jstype) (char * BYTE, int LENGTH) "byte[]"
+%typemap(javain) (char * BYTE, int LENGTH) "$javainput"
+%apply (char * BYTE, int LENGTH) { (char * byteArray, long len) };*/
+%typemap(in) (char * BYTE, int LENGTH) {
+    $1 = NULL;
+    if ($input != NULL) {
+        /* Get our Java byte array as a char * */
+        jboolean isCopy;
+        const char* nativeArray = (char*) (*jenv)->GetByteArrayElements(jenv, $input, &isCopy);
+
+        /* Get the length of our byte array */
+        $2 = (*jenv)->GetArrayLength(jenv, $input);
+
+        /* Copy char* and give it back to Java GSS-API */
+        $1 = (char *) malloc($2);
+        strcpy($1, nativeArray);
+
+        /* Release the Java byte[] */
+        if (isCopy) {
+            (*jenv)->ReleaseByteArrayElements(jenv, $input, nativeArray, JNI_ABORT);
+        }
+    }
+}
+%typemap(jni) (char * BYTE, int LENGTH) "jbyteArray"
+%typemap(jtype) (char * BYTE, int LENGTH) "byte[]"
+%typemap(jstype) (char * BYTE, int LENGTH) "byte[]"
+%typemap(javain) (char * BYTE, int LENGTH) "$javainput"
+%apply (char * BYTE, int LENGTH) { (char * byteArray, long len) };
+
 /* 
  * TYPEMAP:  gss_OID_set * (native) <-->  gss_OID_set_desc (Java)
  * --------------------------------------------------------------
@@ -1480,8 +1520,26 @@ struct extensions
         input_string.value = value;
         input_string.length = strlen(input_string.value);
         maj_status = gss_str_to_oid(&min_status, &input_string, &newoid);
-        if (maj_status != GSS_S_COMPLETE)
+        if (maj_status != GSS_S_COMPLETE) {
             newoid = GSS_C_NO_OID;
+        }
+        return newoid;
+    }
+
+    gss_OID_desc(char * byteArray, long len) {
+        gss_OID_desc *newoid;
+        OM_uint32 maj_status, min_status;
+        int i;
+
+        newoid = (gss_OID_desc *) calloc (1, sizeof(gss_OID_desc));
+        newoid->length = len;
+        newoid->elements = byteArray;
+        /*fprintf(stderr, "newoid->length = %lu\n", (long) newoid->length);
+        fprintf(stderr, "newoid->elements = ");
+        for (i=0; i<len; i++) {
+            fprintf(stderr, "%X (%d) ", (char) byteArray[i], (int) byteArray[i]);
+        }
+        fprintf(stderr, "\n");*/
         return newoid;
     }
 
@@ -1502,10 +1560,36 @@ struct extensions
        } 
     }
 
-    ~gss_OID_desc() {
+    char * toString() {
+        OM_uint32 maj_status, min_status, msg_ctx;
+        gss_buffer_t oidString;
+        gss_buffer_desc msg;
+
+        maj_status = 0;
+        min_status = 0;
+        msg_ctx = 0;
+
+        oidString = malloc(sizeof(gss_buffer_t));
+
+        if ($self) {
+            /* Convert OID into string representation */
+            maj_status = gss_oid_to_str(&min_status, $self, oidString);
+
+            if (maj_status == GSS_S_COMPLETE) {
+                return ((char *) oidString->value);
+            } else {
+                maj_status = gss_release_buffer(min_status, oidString);
+                return NULL;
+            }
+        } else {
+            return NULL;
+        }
+    }
+
+    /*~gss_OID_desc() {
         gss_OID_desc *oid = $self;
         free(oid);
-    }
+    }*/
 }
 
 %extend gss_OID_set_desc {
