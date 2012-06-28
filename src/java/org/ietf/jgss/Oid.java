@@ -1,6 +1,7 @@
 package org.ietf.jgss;
 
 import java.util.regex.*;
+import java.util.Arrays;
 import java.io.*;
 
 import edu.mit.jgss.swig.gss_OID_desc;
@@ -43,17 +44,23 @@ public class Oid {
         }
 
         try {
-            String tmpOidStr = OidUtil.OidStream2String(derOid);
-            boolean matches = OidUtil.verifyOid(tmpOidStr);
+            byte[] tmpOid = OidUtil.OidStream2DER(derOid);
+            boolean valid = OidUtil.verifyOid(tmpOid);
 
-            if (matches) {
-                this.oid = new gss_OID_desc(tmpOidStr);
-            } else {
+            if (!valid) {
                 throw new GSSException(GSSException.FAILURE);
             }
-        } catch (IOException e) {
-            throw new GSSException(GSSException.FAILURE);
-        }
+        
+            /* Remove tag and length from byte array */
+            byte[] shortDerOid = new byte[tmpOid.length - 2];
+            for (int i = 0; i < tmpOid.length-2; i++) {
+                shortDerOid[i] = tmpOid[i+2];
+            }
+            this.oid = new gss_OID_desc(shortDerOid);
+            this.derOid = tmpOid;
+            } catch (IOException e) {
+                throw new GSSException(GSSException.FAILURE);
+            }
     }
 
     /**
@@ -131,7 +138,8 @@ public class Oid {
         if (tmp == null)
             throw new NullPointerException("Input Obj is null");
 
-        if (oid.hashCode() == tmp.oid.hashCode())
+        //if (oid.hashCode() == tmp.oid.hashCode())
+        if (Arrays.equals(this.getDER(), tmp.getDER()))
             return true;
         else
             return false;
@@ -145,7 +153,7 @@ public class Oid {
      */
     public byte[] getDER() {
         if (derOid == null) {
-            this.derOid = OidUtil.OidString2Der(this.toString());
+            this.derOid = OidUtil.OidString2DER(this.toString());
         }
         
         return this.derOid;

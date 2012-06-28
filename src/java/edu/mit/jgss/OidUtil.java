@@ -17,7 +17,7 @@ public class OidUtil {
      *
      */
     public static String OidDer2String(byte[] oid) {
-        // TODO
+        // TODO - not necessary, but might be useful in the future?
         return null;
     }
 
@@ -29,28 +29,27 @@ public class OidUtil {
      * @return Oid in dot-separated String representation
      *
      */
-    public static String OidStream2String(InputStream oid) throws IOException {
+    public static byte[] OidStream2DER(InputStream oid) throws IOException {
         
-        byte tag;
-        byte len;
+        int tag;
+        int length;
         byte[] tmpOid;
+        ByteArrayOutputStream outOid = new ByteArrayOutputStream();
 
         try {
-            tag = (byte) oid.read();
-            len = (byte) oid.read();
+            tag = oid.read();
+            length = oid.read();
+            outOid.write(tag);
+            outOid.write(length);
 
-            tmpOid = new byte[len+2];
-            tmpOid[0] = tag;
-            tmpOid[1] = len;
-
-            for (int i = 0; i < len; i++) {
-                tmpOid[i+2] = (byte) oid.read();
+            for (int i = 0; i < length; i++) {
+                outOid.write(oid.read());
             }
         } catch (IOException e) {
             throw new IOException("I/O Error occurred when reading InputStream");
         }
 
-        return OidDer2String(tmpOid);
+        return outOid.toByteArray();
     }
 
     /**
@@ -61,7 +60,7 @@ public class OidUtil {
      * @return DER-encoded Oid byte array
      *
      */
-    public static byte[] OidString2Der(String oid) {
+    public static byte[] OidString2DER(String oid) {
        
         int octet = 0; 
         int base = 0;
@@ -71,13 +70,11 @@ public class OidUtil {
         ByteArrayOutputStream bytearray = new ByteArrayOutputStream();
         ByteArrayOutputStream tmpArray = new ByteArrayOutputStream();
 
-        System.out.println("String = " + oid);
-
         /* Convert String to int[] */
-        String[] tmp = oid.split(".");
-        for (int j = 0; j < tmp.length; j++) {
+        String[] tmp = oid.split("\\.");
+        /*for (int j = 0; j < tmp.length; j++) {
             System.out.println(tmp[j]);
-        }
+        }*/
         int[] input = new int[tmp.length];
         for (int i = 0; i < tmp.length; i++ ) {
             input[i] = Integer.parseInt(tmp[i]);
@@ -143,7 +140,7 @@ public class OidUtil {
 
         return bytearray.toByteArray();
 
-    } /* end OidString2Der */
+    } /* end OidString2DER */
 
     /**
      * Verifies that an OID is in dot-separated string format.
