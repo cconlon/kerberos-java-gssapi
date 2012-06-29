@@ -72,9 +72,6 @@ public class OidUtil {
 
         /* Convert String to int[] */
         String[] tmp = oid.split("\\.");
-        /*for (int j = 0; j < tmp.length; j++) {
-            System.out.println(tmp[j]);
-        }*/
         int[] input = new int[tmp.length];
         for (int i = 0; i < tmp.length; i++ ) {
             input[i] = Integer.parseInt(tmp[i]);
@@ -89,16 +86,18 @@ public class OidUtil {
         /* Encode the rest of the OID nodes in DER format */
         for (int j = 2; j < input.length; j++) {
 
-            if (input[j] < 127) {
+            if (input[j] <= 127) {
+
                 /* Encode directly */
                 tmpArray.write(input[j]);
+
             } else if (input[j] > 127) {
 
                 /* Reset variables */
                 octet = input[j];
                 base = 128;
                 times = 0;
-                tbMaj = 0;
+                tbMaj = 8;
 
                 /* If bigger than 16383 */
                 if (octet > 16383) {
@@ -113,6 +112,7 @@ public class OidUtil {
                     tmpArray.write((16*tbMaj) + times);
 
                     /* Reset tbMaj in case we're skipping next if */
+                    tbMaj = 8;
                 }
 
                 /* 2047 < octet <= 16383 */

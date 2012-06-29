@@ -23,6 +23,7 @@ public class MessageProp {
      * "false for integrity only. 
      */ 
     public MessageProp(boolean privState) {
+
         this.qop = 0;
         this.privState = privState;
     }
@@ -35,6 +36,7 @@ public class MessageProp {
      * "false" for integrity only.
      */
     public MessageProp(int qop, boolean privState) {
+
         this.qop = qop;
         this.privState = privState;
     }
@@ -45,6 +47,7 @@ public class MessageProp {
      * @return current QOP value. 
      */
     public int getQOP() {
+
         return this.qop;
     }
 
@@ -55,6 +58,7 @@ public class MessageProp {
      * indicates integrity only.
      */
     public boolean getPrivacy() {
+
         return this.privState;
     }
 
@@ -64,6 +68,7 @@ public class MessageProp {
      * @return minor status set by underlying mechanism.
      */
     public int getMinorStatus() {
+
         return this.minorStatus;
     }
 
@@ -75,6 +80,7 @@ public class MessageProp {
      * no mechanism error code has been set.
      */
     public String getMinorString() {
+
         return this.minorString;
     }
 
@@ -85,6 +91,7 @@ public class MessageProp {
      * value.
      */
     public void setQOP(int qopValue) {
+
         this.qop = qopValue;
     }
 
@@ -95,6 +102,7 @@ public class MessageProp {
      * integrity only.
      */
     public void setPrivacy(boolean privState) {
+
         this.privState = privState;
     }
 
@@ -104,6 +112,7 @@ public class MessageProp {
      * @return "true" if token is a duplicate, "false" otherwise.
      */
     public boolean isDuplicateToken() {
+
         return this.duplicate;
     }
 
@@ -113,6 +122,7 @@ public class MessageProp {
      * @return "true" if the token has expired, "false" otherwise.
      */ 
     public boolean isOldToken() {
+
         return this.old;
     }
 
@@ -122,6 +132,7 @@ public class MessageProp {
      * @return "true" if a later token has been processed.
      */
     public boolean isUnseqToken() {
+
         return this.unseq;
     }
 
@@ -131,6 +142,7 @@ public class MessageProp {
      * @return "true" if expected per-message token was not received.
      */
     public boolean isGapToken() {
+
         return this.gap;
     }
 

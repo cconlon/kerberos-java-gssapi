@@ -36,9 +36,9 @@ public class ChannelBinding {
      */
     public ChannelBinding(InetAddress initAddr, InetAddress acceptAddr,
                           byte[] appData) {
+        this(appData);
         this.initAddr = initAddr;
         this.acceptAddr = acceptAddr;
-        this.appData = appData;
     }
 
     /**
@@ -49,7 +49,11 @@ public class ChannelBinding {
      * channel bindings.
      */
     public ChannelBinding(byte[] appData) {
-        this.appData = appData;
+
+        if (appData != null) {
+            this.appData = new byte[appData.length];
+            System.arraycopy(appData, 0, this.appData, 0, appData.length);
+        }
     }
 
     /**
@@ -58,6 +62,7 @@ public class ChannelBinding {
      * @return address of the context initiator.
      */ 
     public InetAddress getInitiatorAddress() {
+
         return initAddr;
     }
 
@@ -67,6 +72,7 @@ public class ChannelBinding {
      * @return address of the context acceptor.
      */
     public InetAddress getAcceptorAddress() {
+
         return acceptAddr;
     }
 
@@ -79,10 +85,14 @@ public class ChannelBinding {
      * "null" if not set.
      */
     public byte[] getApplicationData() {
-        if (appData == null)
-            return null;
 
-        return appData;
+        if (appData == null) {
+            return null;
+        } else {
+            byte[] tmp = new byte[this.appData.length];
+            System.arraycopy(this.appData, 0, tmp, 0, this.appData.length);
+            return tmp;
+        }
     }
 
     /**

@@ -128,17 +128,19 @@ public class Oid {
      * the same Oid value. Two Oid objects are equal when the
      * integer result from hashCode() method called on them is the same.
      *
-     * @param Obj the Oid object with which to compare.
+     * @param obj the Oid object with which to compare.
      * @return "true" if the two objects are equal, "false" otherwise.
      */
-    public boolean equals(Object Obj) {
+    public boolean equals(Object obj) {
 
-        Oid tmp = (Oid) Obj;
+        if (! (obj instanceof Oid))
+            return false;
+
+        Oid tmp = (Oid) obj;
 
         if (tmp == null)
             throw new NullPointerException("Input Obj is null");
 
-        //if (oid.hashCode() == tmp.oid.hashCode())
         if (Arrays.equals(this.getDER(), tmp.getDER()))
             return true;
         else
@@ -152,10 +154,11 @@ public class Oid {
      * @return full ASN.1 DER encoding for the Oid object.
      */
     public byte[] getDER() {
+
         if (derOid == null) {
             this.derOid = OidUtil.OidString2DER(this.toString());
         }
-        
+
         return this.derOid;
     }
 
@@ -167,6 +170,7 @@ public class Oid {
      * "false" otherwise.
      */
     public boolean containedIn(Oid[] oids) {
+
         if (oids == null)
             throw new NullPointerException("Input Oid[] is null");
 
@@ -178,14 +182,23 @@ public class Oid {
             return false;
     }
 
-    public static Oid getOid(String strOid) {
+    /**
+     * package-scope method used in GSSName.java to create a new Oid
+     * object.
+     *
+     * @param strOid Oid in dot-separated String representation
+     * @return new Oid object matching input string
+     */
+    static Oid getNewOid(String strOid) {
+
         Oid retOid = null;
+
         try {
             retOid = new Oid(strOid);
         } catch (GSSException e) {
             e.printStackTrace();
         }
+
         return retOid;
     }
-
 }

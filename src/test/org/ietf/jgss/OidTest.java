@@ -5,6 +5,7 @@ import junit.framework.TestCase;
 import static org.junit.Assert.assertEquals;
 
 import java.io.*;
+import java.util.Arrays;
 import org.ietf.jgss.Oid;
 import org.ietf.jgss.GSSException;
 
@@ -25,12 +26,19 @@ public class OidTest extends TestCase {
         }
     }
 
-    public void testOidtoString() throws GSSException {
+    public void testOidMethods() throws GSSException {
         String oidString = "1.2.840.113554.1.2.2"; 
         byte[] oidDER = {(byte)0x06, (byte)0x09, (byte)0x2A, (byte)0x86, 
                          (byte)0x48, (byte)0x86, (byte)0xF7, (byte)0x12, 
                          (byte)0x01, (byte)0x02, (byte)0x02};
+
+        /* incorrect DER-encoded Oid array, bad length value */
+        byte[] badOidDER = {(byte)0x06, (byte)0x0A, (byte)0x2A, (byte)0x86, 
+                         (byte)0x48, (byte)0x86, (byte)0xF7, (byte)0x12, 
+                         (byte)0x01, (byte)0x02, (byte)0x02};
         try {
+
+            /* testing Oid(DER) constructor and Oid.toString() method */
             Oid testoid = new Oid("1.2.840.113554.1.2.2");
             if (!oidString.equals(testoid.toString())) {
                 fail("Oid.toString failed");
@@ -40,9 +48,36 @@ public class OidTest extends TestCase {
             if (!oidString.equals(testoid2.toString())) {
                 fail("Oid.toString failed using DER-encoded OID, " + testoid2.toString());
             }
+
+            /* testing Oid.getDER() method */
+            if (!Arrays.equals(testoid.getDER(), testoid2.getDER())) {
+                fail("Oid.getDER failed during Oid comparison");
+            }
+
+            /* testing Oid.containedIn(Oid[]) method */
+            Oid[] oidArray = new Oid[2];
+            oidArray[0] = testoid;
+            oidArray[1] = testoid2;
+
+            if (!testoid.containedIn(oidArray)) {
+                fail("Oid.containedIn failed");
+            }
+
+            Oid testoid3 = new Oid("1.2.3.4");
+            if (testoid3.containedIn(oidArray)) {
+                fail("Oid.containedIn failed");
+            }
+
         } catch (GSSException e) {
             throw e;
-            //fail("Failed to create Oid object");
+        }
+
+        try {
+            Oid testoid3 = new Oid(badOidDER);
+            fail ("Oid(Oid DER array) validation failed.");
+
+        } catch (GSSException e) {
+            // We expect this to fail verification
         }
     }
 
@@ -78,4 +113,7 @@ public class OidTest extends TestCase {
         }
     }
 
+    public void testGetDER() {
+
+    }
 }

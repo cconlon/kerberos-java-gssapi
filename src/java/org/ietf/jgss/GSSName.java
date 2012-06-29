@@ -15,7 +15,7 @@ public interface GSSName {
      * States(840) mit(113554) infosys(1) gssapi(2) generic(1)
      * service_name(4) }
      */
-    public static final Oid NT_HOSTBASED_SERVICE = Oid.getOid("1.2.840.113554.1.2.1.4");
+    public static final Oid NT_HOSTBASED_SERVICE = Oid.getNewOid("1.2.840.113554.1.2.1.4");
 
     /**
      * Name type to indicate a named user on a local system. 
@@ -24,7 +24,7 @@ public interface GSSName {
      * United States(840) mit(113554) infosys(1) gssapi(2) generic(1) 
      * user_name(1) }
      */
-    public static final Oid NT_USER_NAME = Oid.getOid("1.2.840.113554.1.2.1.1");
+    public static final Oid NT_USER_NAME = Oid.getNewOid("1.2.840.113554.1.2.1.1");
 
     /**
      * Name type to indicate a numeric user identifier corresponding to a
@@ -34,7 +34,7 @@ public interface GSSName {
      * United States(840) mit(113554) infosys(1) gssapi(2) generic(1)
      * machine_uid_name(2) }
      */
-    public static final Oid NT_MACHINE_UID_NAME = Oid.getOid("1.2.840.113554.1.2.1.2");
+    public static final Oid NT_MACHINE_UID_NAME = Oid.getNewOid("1.2.840.113554.1.2.1.2");
 
     /**
      * Name type to indicate a string of digits representing the numeric
@@ -44,7 +44,7 @@ public interface GSSName {
      * States(840) mit(113554) infosys(1) gssapi(2) generic(1)
      * string_uid_name(3) }
      */
-    public static final Oid NT_STRING_UID_NAME = Oid.getOid("1.2.840.113554.1.2.1.3");
+    public static final Oid NT_STRING_UID_NAME = Oid.getNewOid("1.2.840.113554.1.2.1.3");
 
     /**
      * Name type for representing an anonymous entity.
@@ -52,7 +52,7 @@ public interface GSSName {
      * It represents the following value: { iso(1), org(3), dod(6),
      * internet(1), security(5), nametypes(6), gss-anonymous-name(3) }
      */
-    public static final Oid NT_ANONYMOUS = Oid.getOid("1.3.6.1.5.6.3");
+    public static final Oid NT_ANONYMOUS = Oid.getNewOid("1.3.6.1.5.6.3");
 
     /**
      * Name type used to indicate an exported name produced by the export
@@ -61,7 +61,7 @@ public interface GSSName {
      * It represents the following value: { iso(1), org(3), dod(6),
      * internet(1), security(5), nametypes(6), gss-api-exported-name(4) }
      */
-    public static final Oid NT_EXPORT_NAME = Oid.getOid("1.3.6.1.5.6.4");
+    public static final Oid NT_EXPORT_NAME = Oid.getNewOid("1.3.6.1.5.6.4");
 
     /**
      * Compares two GSSName objects to determine if they refer to the same
