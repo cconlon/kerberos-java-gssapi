@@ -91,7 +91,22 @@ public class ChannelBinding {
      * @return "true" if the two objects are equal, "false" otherwise.
      */
     public boolean equals(Object obj) {
-        // TODO
+
+        if (!(obj instanceof ChannelBinding)) {
+            return false;
+        }
+
+        ChannelBinding tmp = (ChannelBinding) obj;
+
+        if (!initAddr.equals(tmp.initAddr) || 
+            !(acceptAddr.equals(tmp.acceptAddr))) {
+            return false;
+        }
+
+        if (!Arrays.equals(appData, tmp.appData)) {
+            return false;
+        }
+
         return true;
     }
 }
