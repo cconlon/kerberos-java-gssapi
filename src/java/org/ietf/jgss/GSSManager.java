@@ -19,8 +19,7 @@ public abstract class GSSManager {
      * @return default GSSManager implementation.
      */
     public static GSSManager getInstance() {
-        // TODO
-        return null;
+        return new edu.mit.jgss.GSSManagerImpl();
     }
 
     /**

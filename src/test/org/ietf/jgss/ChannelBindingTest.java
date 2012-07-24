@@ -31,12 +31,15 @@ public class ChannelBindingTest extends TestCase {
 
             if (!cb.getAcceptorAddress().getHostAddress().equals("127.0.0.1"))
                 fail("Failed to set acceptor InetAddress correctly");
+            System.out.format("%-40s %10s%n", "... testing setting InetAddress", "... passed");
 
             if (!Arrays.equals(cb.getApplicationData(), appData))
                 fail("Failed to set application data correctly");
+            System.out.format("%-40s %10s%n", "... testing setting app data", "... passed");
 
             if (!cb.equals(cb2))
                 fail("ChannelBinding equals method failed");
+            System.out.format("%-40s %10s%n", "... testing equals()", "... passed");
 
         } catch (Exception e) {
             e.printStackTrace();

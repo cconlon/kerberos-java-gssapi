@@ -9,6 +9,7 @@ import org.ietf.jgss.OidTest;
 @RunWith(Suite.class)
 @SuiteClasses({OidTest.class, 
                MessagePropTest.class,
-               ChannelBindingTest.class})
+               ChannelBindingTest.class,
+               GSSNameTest.class})
 public class JUnit4Suite { }
 

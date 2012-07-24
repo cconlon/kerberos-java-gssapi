@@ -1503,6 +1503,25 @@ struct extensions
         gs->length = strlen(gs->value);
         return gs;
     }
+    
+    /* 
+     */
+    char * toString() {
+        OM_uint32 maj_status, min_status, msg_ctx;
+        maj_status = 0;
+        min_status = 0;
+        msg_ctx = 0;
+        
+        char* outputStr;
+
+        if ($self) {
+            outputStr = malloc($self->length);
+            strcpy(outputStr, $self->value);
+            return outputStr;
+        } else {
+            return NULL;
+        }
+    }
 }
 
 %extend gss_OID_desc {
@@ -1560,6 +1579,10 @@ struct extensions
        } 
     }
 
+    /* 
+     * Returns a space delimited string with brackets, ie:
+     * "{ 1 2 ... 233 }"
+     */
     char * toString() {
         OM_uint32 maj_status, min_status, msg_ctx;
         gss_buffer_t oidString;
@@ -1578,9 +1601,70 @@ struct extensions
             if (maj_status == GSS_S_COMPLETE) {
                 return ((char *) oidString->value);
             } else {
-                maj_status = gss_release_buffer(min_status, oidString);
+                maj_status = gss_release_buffer(&min_status, oidString);
                 return NULL;
             }
+        } else {
+            return NULL;
+        }
+    }
+
+    /*
+     * Returns a dot delimited string representation of the OID, ie:
+     * "1.2. ... .233"
+     */
+    char * toDotString() {
+        OM_uint32 maj_status, min_status, msg_ctx;
+        gss_buffer_t oidString;
+        gss_buffer_desc msg;
+        char *newString;
+        int elements = 0;
+        int i = 0;
+        int j = 0;
+
+        maj_status = 0;
+        min_status = 0;
+        msg_ctx = 0;
+
+        oidString = malloc(sizeof(gss_buffer_t));
+
+        if ($self) {
+
+            /* convert OID into native string representation "{1 2 ... 2}" */
+            maj_status = gss_oid_to_str(&min_status, $self, oidString);
+
+            if (maj_status != GSS_S_COMPLETE) {
+                maj_status = gss_release_buffer(&min_status, oidString);
+                return NULL;
+            }
+
+            /* determine correct length of new string */
+            for (i = 0; ((char*)oidString->value)[i] != '\0'; i++) {
+                if (((char*)oidString->value)[i] != '{' &&
+                    ((char*)oidString->value)[i] != '}') {
+                    elements++;
+                }
+            }
+
+            newString = malloc(elements + 1);
+
+            /* create new dot-separated string */
+            for (i = 0; ((char*)oidString->value)[i] != '\0'; i++) {
+                if (((char*)oidString->value)[i] != ' ' &&
+                    ((char*)oidString->value)[i] != '{' &&
+                    ((char*)oidString->value)[i] != '}') {
+                    newString[j] = ((char*)oidString->value)[i];
+                    j++;
+                } else if (((char*)oidString->value)[i] == ' ' &&
+                           ((char*)oidString->value)[i-1] != '{' &&
+                           ((char*)oidString->value)[i+1] != '}') {
+                    newString[j] = '.';
+                    j++;
+                }
+            }
+            newString[j] = '\0';
+            return newString;
+
         } else {
             return NULL;
         }

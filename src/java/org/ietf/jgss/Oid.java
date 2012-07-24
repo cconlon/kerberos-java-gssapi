@@ -25,6 +25,7 @@ public class Oid {
         if (matches) {
             this.oid = new gss_OID_desc(strOid);
         } else {
+            System.out.println("failed to verify OID string");
             throw new GSSException(GSSException.FAILURE);
         }
     }
@@ -57,7 +58,11 @@ public class Oid {
                 shortDerOid[i] = tmpOid[i+2];
             }
             this.oid = new gss_OID_desc(shortDerOid);
-            this.derOid = tmpOid;
+
+            /* store der-encoded Oid in object for future use */ 
+            this.derOid = new byte[tmpOid.length];
+            System.arraycopy(tmpOid, 0, this.derOid, 0, tmpOid.length);
+
             } catch (IOException e) {
                 throw new GSSException(GSSException.FAILURE);
             }
@@ -88,7 +93,10 @@ public class Oid {
             shortDerOid[i] = derOid[i+2];
         }
         this.oid = new gss_OID_desc(shortDerOid);
-        this.derOid = derOid;
+       
+        /* store der-encoded Oid in object for future use */ 
+        this.derOid = new byte[derOid.length];
+        System.arraycopy(derOid, 0, this.derOid, 0, derOid.length);
     }
 
     /**
@@ -156,7 +164,10 @@ public class Oid {
     public byte[] getDER() {
 
         if (derOid == null) {
-            this.derOid = OidUtil.OidString2DER(this.toString());
+            byte[] tmpDerOid = OidUtil.OidString2DER(this.toString());
+            return tmpDerOid;
+            //System.arraycopy(tmpDerOid, 0, this.derOid, 0, tmpDerOid.length);
+            //this.derOid = OidUtil.OidString2DER(this.toString());
         }
 
         return this.derOid;
@@ -200,5 +211,16 @@ public class Oid {
         }
 
         return retOid;
+    }
+
+    public gss_OID_desc getNativeOid() {
+        return  this.oid;
+    }
+
+    public void setNativeOid(gss_OID_desc newOid) {
+        if (newOid != null) {
+            this.oid = newOid;
+            this.derOid = null;
+        }
     }
 }

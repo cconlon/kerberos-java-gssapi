@@ -1,5 +1,7 @@
 package org.ietf.jgss;
 
+import edu.mit.jgss.swig.gss_name_t_desc;
+
 /**
  * Encapsulates a single GSS-API princiapl entity. This interface is defined 
  * in section 7.2 of RFC 5653 (http://tools.ietf.org/html/rfc5653).
@@ -14,6 +16,8 @@ public interface GSSName {
      * It represents the following value: { iso{1) member-body(2) United
      * States(840) mit(113554) infosys(1) gssapi(2) generic(1)
      * service_name(4) }
+     *
+     * Native GSS-API equivalent = GSS_C_NT_HOSTBASED_SERVICE
      */
     public static final Oid NT_HOSTBASED_SERVICE = Oid.getNewOid("1.2.840.113554.1.2.1.4");
 
@@ -23,6 +27,8 @@ public interface GSSName {
      * It represents the following value: { iso(1) member-body(2) 
      * United States(840) mit(113554) infosys(1) gssapi(2) generic(1) 
      * user_name(1) }
+     *
+     * Native GSS-API equivalent = GSS_C_NT_USER_NAME
      */
     public static final Oid NT_USER_NAME = Oid.getNewOid("1.2.840.113554.1.2.1.1");
 
@@ -33,6 +39,8 @@ public interface GSSName {
      * It represents the following value: { iso(1) member-body(2)
      * United States(840) mit(113554) infosys(1) gssapi(2) generic(1)
      * machine_uid_name(2) }
+     *
+     * Native GSS-API equivalent = GSS_C_NT_MACHINE_UID_NAME
      */
     public static final Oid NT_MACHINE_UID_NAME = Oid.getNewOid("1.2.840.113554.1.2.1.2");
 
@@ -43,6 +51,8 @@ public interface GSSName {
      * It represents the following value: { iso(1) member-body(2) United
      * States(840) mit(113554) infosys(1) gssapi(2) generic(1)
      * string_uid_name(3) }
+     *
+     * Native GSS-API equivalent = GSS_C_NT_STRING_UID_NAME
      */
     public static final Oid NT_STRING_UID_NAME = Oid.getNewOid("1.2.840.113554.1.2.1.3");
 
@@ -51,6 +61,8 @@ public interface GSSName {
      *
      * It represents the following value: { iso(1), org(3), dod(6),
      * internet(1), security(5), nametypes(6), gss-anonymous-name(3) }
+     *
+     * Native GSS-API equivalent = GSS_C_NT_ANONYMOUS 
      */
     public static final Oid NT_ANONYMOUS = Oid.getNewOid("1.3.6.1.5.6.3");
 
@@ -60,6 +72,8 @@ public interface GSSName {
      *
      * It represents the following value: { iso(1), org(3), dod(6),
      * internet(1), security(5), nametypes(6), gss-api-exported-name(4) }
+     *
+     * Native GSS-API equivalent =  GSS_C_NT_EXPORT_NAME;
      */
     public static final Oid NT_EXPORT_NAME = Oid.getNewOid("1.3.6.1.5.6.4");
 
@@ -140,5 +154,23 @@ public interface GSSName {
      * otherwise.
      */
     public boolean isMN();
+   
+    /**
+     * Returns the internal SWIG-generated object of type
+     * gss_name_t_desc. Used in functions from GSSNameImpl.java
+     *
+     *
+     * @return internal gss_name_t_desc object
+     */ 
+    public gss_name_t_desc getInternGSSName();
+    
+    /**
+     * Sets the internal SWIG-generated object of type
+     * gss_name_t_desc. Used in functions from GSSNameImpl.java
+     *
+     * @return 0 on success, -1 on failure
+     *
+     */ 
+    public int setInternGSSName(gss_name_t_desc newName);
 
 }
