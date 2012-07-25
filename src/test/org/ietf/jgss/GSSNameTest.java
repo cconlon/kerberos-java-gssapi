@@ -81,16 +81,6 @@ public class GSSNameTest extends TestCase {
                  "NT_ANONYMOUS)");
         }
         
-        /* testing failure of NT_EXPORT_NAME*/ 
-        try {
-            GSSName testName5 = testManager.createName("test@test", 
-                    GSSName.NT_EXPORT_NAME);
-        } catch (GSSException e) {
-            System.out.println(e.toString());
-            fail("Failed to create new GSSName (test@test, " + 
-                 "NT_EXPORT_NAME)");
-        }
-
         /* createName(String, GSSName, Oid) */
         Oid krb5Mech = new Oid("1.2.840.113554.1.2.2");
         try {
