@@ -62,7 +62,8 @@ public class GSSNameImpl implements GSSName {
         if (maj_status != gsswrapper.GSS_S_COMPLETE) {
             if (DEBUG_ERR == true)
                 System.out.println("gss_compare_name failed... maj_status = " + maj_status);
-            throw new GSSException(GSSException.FAILURE);
+            //throw new GSSException(GSSException.FAILURE);
+            throw new GSSExceptionImpl((int)maj_status, (int)min_status[0]);
         } 
 
         if (ret[0] == 1)
@@ -111,7 +112,8 @@ public class GSSNameImpl implements GSSName {
             tmpOid = mech.getNativeOid();
 
             if (!tmpOid.toDotString().equals("1.2.840.113554.1.2.2")) {
-                throw new GSSException(GSSException.FAILURE);
+                //throw new GSSException(GSSException.FAILURE);
+                throw new GSSExceptionImpl((int)maj_status, (int)min_status[0]);
             }
         }
 
@@ -123,14 +125,16 @@ public class GSSNameImpl implements GSSName {
         if (maj_status != gsswrapper.GSS_S_COMPLETE) {
             if (DEBUG_ERR == true)
                 System.err.println("internal gss_canonicalize_name failed");
-            throw new GSSException(GSSException.FAILURE);
+            //throw new GSSException(GSSException.FAILURE);
+            throw new GSSExceptionImpl((int)maj_status, (int)min_status[0]);
         }
 
         ret = canonicalName.setInternGSSName(tmpName);
         if (ret != 0) {
             if (DEBUG_ERR == true)
                 System.err.println("setInternGSSName failed after canonicalize");
-            throw new GSSException(GSSException.FAILURE);
+            //throw new GSSException(GSSException.FAILURE);
+            throw new GSSExceptionImpl((int)maj_status, (int)min_status[0]);
         }
 
         return canonicalName;
@@ -143,8 +147,8 @@ public class GSSNameImpl implements GSSName {
 
         // if this is not a MN, throw a GSSException with NAME_NOT_MN status code
         if (!this.isMN()) {
-            // TODO - set status code
-            throw new GSSException(GSSException.FAILURE);
+            //throw new GSSException(GSSException.FAILURE);
+            throw new GSSExceptionImpl((int)maj_status, (int)min_status[0]);
         }
 
         gss_buffer_desc exportName = new gss_buffer_desc();
@@ -153,7 +157,8 @@ public class GSSNameImpl implements GSSName {
                 exportName);
 
         if (maj_status != gsswrapper.GSS_S_COMPLETE) {
-            throw new GSSException(GSSException.FAILURE);
+            //throw new GSSException(GSSException.FAILURE);
+            throw new GSSExceptionImpl((int)maj_status, (int)min_status[0]);
         }
 
         byte[] tmp_array = new byte[(int)exportName.getLength()];
@@ -242,7 +247,8 @@ public class GSSNameImpl implements GSSName {
         if (nameStr == null) {
             if (DEBUG_ERR == true)
                 System.out.println("nameStr == null, during createName");
-            throw new GSSException(GSSException.FAILURE);
+            //throw new GSSException(GSSException.FAILURE);
+            throw new GSSExceptionImpl((int)maj_status, (int)min_status[0]);
         }
 
         nameBuffer.setLength(nameStr.length());
@@ -260,7 +266,8 @@ public class GSSNameImpl implements GSSName {
                 /* nametype is not supported */
                 if (DEBUG_ERR == true)
                     System.out.println("nametype not supported");
-                throw new GSSException(GSSException.FAILURE);
+                //throw new GSSException(GSSException.FAILURE);
+                throw new GSSExceptionImpl((int)maj_status, (int)min_status[0]);
             }
 
         /* initialize internal gss_name_t_desc */
@@ -278,7 +285,8 @@ public class GSSNameImpl implements GSSName {
         if (maj_status != gsswrapper.GSS_S_COMPLETE) {
             if (DEBUG_ERR == true)
                 System.out.println("gss_import_name failed, during createName");
-            throw new GSSException(GSSException.FAILURE);
+            //throw new GSSException(GSSException.FAILURE);
+            throw new GSSExceptionImpl((int)maj_status, (int)min_status[0]);
         }
         
         return this;
@@ -293,7 +301,8 @@ public class GSSNameImpl implements GSSName {
         if (nameStr == null) {
             if (DEBUG_ERR == true)
                 System.out.println("nameStr == null, during createName");
-            throw new GSSException(GSSException.FAILURE);
+            //throw new GSSException(GSSException.FAILURE);
+            throw new GSSExceptionImpl((int)maj_status, (int)min_status[0]);
         }
 
         /* copy byte[] to native gss_buffer_desc */
@@ -313,7 +322,8 @@ public class GSSNameImpl implements GSSName {
                 /* nametype is not supported */
                 if (DEBUG_ERR == true)
                     System.out.println("nametype not supported");
-                throw new GSSException(GSSException.FAILURE);
+                //throw new GSSException(GSSException.FAILURE);
+                throw new GSSExceptionImpl((int)maj_status, (int)min_status[0]);
             }
 
         /* initialize internal gss_name_t_desc */
@@ -331,7 +341,8 @@ public class GSSNameImpl implements GSSName {
         if (maj_status != gsswrapper.GSS_S_COMPLETE) {
             if (DEBUG_ERR == true)
                 System.out.println("gss_import_name failed, during createName");
-            throw new GSSException(GSSException.FAILURE);
+            //throw new GSSException(GSSException.FAILURE);
+            throw new GSSExceptionImpl((int)maj_status, (int)min_status[0]);
         }
         
         return this;

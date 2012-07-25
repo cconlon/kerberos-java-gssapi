@@ -1,5 +1,7 @@
 package org.ietf.jgss;
 
+import edu.mit.jgss.swig.*;
+
 public class GSSException extends Exception {
 
     public static final int BAD_BINDINGS = 1;
@@ -51,10 +53,39 @@ public class GSSException extends Exception {
     }
 
     public String getMajorString() {
+
+        long[] msg_ctx = {0};
+        long ret = 0;
+        gss_buffer_desc storeBuff = new gss_buffer_desc();
+
+        ret = gsswrapper.gss_display_status_wrap(minCode, majCode,
+                gsswrapper.GSS_C_GSS_CODE,
+                gsswrapper.GSS_C_NO_OID,
+                msg_ctx, storeBuff);
+        if (ret != gsswrapper.GSS_S_COMPLETE) {
+            this.majString = null;
+        } else {
+            this.majString = storeBuff.getValue();
+        }
+
         return this.majString;
     }
 
     public String getMinorString() {
+
+        long[] msg_ctx = {0};
+        long ret = 0;
+        gss_buffer_desc storeBuff = new gss_buffer_desc();
+
+        ret = gsswrapper.gss_display_status_wrap(majCode, minCode,
+                gsswrapper.GSS_C_MECH_CODE,
+                gsswrapper.GSS_C_NO_OID,
+                msg_ctx, storeBuff);
+        if (ret != gsswrapper.GSS_S_COMPLETE) {
+            this.minString = null;
+        } else {
+            this.minString = storeBuff.getValue();
+        }
         return this.minString;
     }
 
