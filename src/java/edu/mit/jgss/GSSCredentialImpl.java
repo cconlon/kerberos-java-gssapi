@@ -34,55 +34,211 @@ import org.ietf.jgss.GSSException;
 import org.ietf.jgss.Oid;
 import org.ietf.jgss.GSSName;
 
+import edu.mit.jgss.swig.*;
+
 public class GSSCredentialImpl implements GSSCredential {
     
+    /* Representing our underlying SWIG-wrapped gss_cred_id_t object */
+    private gss_cred_id_t_desc internGSSCred;
+
     public void dispose() throws GSSException {
-        // TODO
+        
+        long[] min_status = {0};
+        long ret = 0;
+
+        ret = gsswrapper.gss_release_cred(min_status, this.internGSSCred);
+
+        if (ret != gsswrapper.GSS_S_COMPLETE) {
+            throw new GSSExceptionImpl(0, (int)min_status[0]);
+        }
+
     }
     
     public GSSName getName() throws GSSException {
-        // TODO
-        return null;
+
+        long maj_status = 0;
+        long[] min_status = {0};
+        long[] lifetime = {0};
+        int[] cred_usage = {0};
+        int ret = 0;
+        gss_name_t_desc name = new gss_name_t_desc();
+        gss_OID_set_desc temp_mech_set = new gss_OID_set_desc();
+        
+        GSSNameImpl tmpName = new GSSNameImpl();
+        
+        maj_status = gsswrapper.gss_inquire_cred(min_status,
+                this.internGSSCred, name, lifetime, cred_usage,
+                temp_mech_set);
+
+        if (maj_status != gsswrapper.GSS_S_COMPLETE) {
+            throw new GSSExceptionImpl((int)maj_status, (int)min_status[0]);
+        }
+
+        ret = tmpName.setInternGSSName(name);
+        if (ret != 0) {
+            throw new GSSExceptionImpl((int)maj_status, (int)min_status[0]);
+        }
+
+        return tmpName;
+
     }
     
     public GSSName getName(Oid mechOID) throws GSSException {
-        // TODO
-        return null;
+
+        GSSName name = getName();
+        GSSName canoniName = name.canonicalize(mechOID);
+
+        return canoniName;
     }
     
     public int getRemainingLifetime() throws GSSException {
-        // TODO
-        return 0;
+        
+        long maj_status = 0;
+        long[] min_status = {0};
+        long[] lifetime = {0};
+        int[] cred_usage = {0};
+        gss_name_t_desc name = new gss_name_t_desc();
+        gss_OID_set_desc temp_mech_set = new gss_OID_set_desc();
+        
+        maj_status = gsswrapper.gss_inquire_cred(min_status,
+                this.internGSSCred, name, lifetime, cred_usage,
+                temp_mech_set);
+
+        if (maj_status != gsswrapper.GSS_S_COMPLETE) {
+            throw new GSSExceptionImpl((int)maj_status, (int)min_status[0]);
+        }
+
+        return (int)lifetime[0];
     }
     
     public int getRemainingInitLifetime(Oid mech) throws GSSException {
-        // TODO
-        return 0;
+
+        long maj_status = 0;
+        long[] min_status = {0};
+        long[] init_lifetime = {0};
+        long[] accept_lifetime = {0};
+        int[] cred_usage = {0};
+        gss_name_t_desc name = new gss_name_t_desc();
+
+        maj_status = gsswrapper.gss_inquire_cred_by_mech(min_status,
+                this.internGSSCred, mech.getNativeOid(), name, init_lifetime,
+                accept_lifetime, cred_usage);
+
+        if (maj_status != gsswrapper.GSS_S_COMPLETE) {
+            throw new GSSExceptionImpl((int)maj_status, (int)min_status[0]);
+        }
+
+        return (int)init_lifetime[0];
     }
     
     public int getRemainingAcceptLifetime(Oid mech) throws GSSException {
-        // TODO
-        return 0;
+        
+        long maj_status = 0;
+        long[] min_status = {0};
+        long[] init_lifetime = {0};
+        long[] accept_lifetime = {0};
+        int[] cred_usage = {0};
+        gss_name_t_desc name = new gss_name_t_desc();
+
+        maj_status = gsswrapper.gss_inquire_cred_by_mech(min_status,
+                this.internGSSCred, mech.getNativeOid(), name, init_lifetime,
+                accept_lifetime, cred_usage);
+
+        if (maj_status != gsswrapper.GSS_S_COMPLETE) {
+            throw new GSSExceptionImpl((int)maj_status, (int)min_status[0]);
+        }
+
+        return (int)accept_lifetime[0];
+
     }
     
     public int getUsage() throws GSSException {
-        // TODO
-        return 0;
+        
+        long maj_status = 0;
+        long[] min_status = {0};
+        long[] lifetime = {0};
+        int[] cred_usage = {0};
+        gss_name_t_desc name = new gss_name_t_desc();
+        gss_OID_set_desc temp_mech_set = new gss_OID_set_desc();
+        
+        maj_status = gsswrapper.gss_inquire_cred(min_status,
+                this.internGSSCred, name, lifetime, cred_usage,
+                temp_mech_set);
+
+        if (maj_status != gsswrapper.GSS_S_COMPLETE) {
+            throw new GSSExceptionImpl((int)maj_status, (int)min_status[0]);
+        }
+
+        return cred_usage[0];
+
     }
     
     public int getUsage(Oid mechOID) throws GSSException {
-        // TODO
-        return 0;
+        
+        long maj_status = 0;
+        long[] min_status = {0};
+        long[] init_lifetime = {0};
+        long[] accept_lifetime = {0};
+        int[] cred_usage = {0};
+        gss_name_t_desc name = new gss_name_t_desc();
+
+        maj_status = gsswrapper.gss_inquire_cred_by_mech(min_status,
+                this.internGSSCred, mechOID.getNativeOid(), name, 
+                init_lifetime, accept_lifetime, cred_usage);
+
+        if (maj_status != gsswrapper.GSS_S_COMPLETE) {
+            throw new GSSExceptionImpl((int)maj_status, (int)min_status[0]);
+        }
+
+        return cred_usage[0];
+
     }
     
     public Oid[] getMechs() throws GSSException {
-        // TODO
-        return null;
+        
+        long maj_status = 0;
+        long[] min_status = {0};
+        long[] lifetime = {0};
+        int[] cred_usage = {0};
+        gss_name_t_desc name = new gss_name_t_desc();
+        gss_OID_set_desc temp_mech_set = new gss_OID_set_desc();
+        
+        maj_status = gsswrapper.gss_inquire_cred(min_status,
+                this.internGSSCred, name, lifetime, cred_usage,
+                temp_mech_set);
+
+        if (maj_status != gsswrapper.GSS_S_COMPLETE) {
+            throw new GSSExceptionImpl((int)maj_status, (int)min_status[0]);
+        }
+
+        /* temp_mech_set is a set, retrieve elements using getElement() and
+           getCount() */
+        Oid[] mechs = new Oid[(int)temp_mech_set.getCount()];
+
+        for (int i = 0; i < temp_mech_set.getCount(); i++) {
+            mechs[i] = new Oid(temp_mech_set.getElement(i).toDotString());
+        }
+
+        return mechs;
     }
     
     public void add(GSSName aName, int initLifetime, int acceptLifetime,
             Oid mech, int usage) throws GSSException {
-        // TODO
+
+        long maj_status = 0;
+        long[] min_status = {0};
+        long[] lifetime = {0};
+        int[] cred_usage = {0};
+
+        maj_status = gsswrapper.gss_add_cred(min_status, this.internGSSCred,
+                aName.getInternGSSName(), mech.getNativeOid(),
+                usage, initLifetime, acceptLifetime, null, null,
+                null, null);
+
+        if (maj_status != gsswrapper.GSS_S_COMPLETE) {
+            throw new GSSExceptionImpl((int)maj_status, (int)min_status[0]);
+        }
+
     }
     
     public boolean equals(Object another) {
