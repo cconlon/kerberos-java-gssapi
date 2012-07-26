@@ -76,10 +76,7 @@ public class GSSManagerImpl extends GSSManager {
     public GSSName createName(String nameStr, Oid nameType, Oid mech)
         throws GSSException {
 
-        /*GSSNameImpl newName = new GSSNameImpl();
-        newName.importName(nameStr, nameType);*/
         GSSName newName = createName(nameStr, nameType);
-
         GSSName canonicalizedName = newName.canonicalize(mech);
         return canonicalizedName;
 
@@ -87,33 +84,35 @@ public class GSSManagerImpl extends GSSManager {
 
     public GSSName createName(byte[] name, Oid nameType, Oid mech) throws GSSException {
 
-        /*GSSNameImpl newName = new GSSNameImpl();
-        newName.importName(name, nameType);*/
         GSSName newName = createName(name, nameType);
-
         GSSName canonicalizedName = newName.canonicalize(mech);
         return canonicalizedName;
     
     }
 
     public GSSCredential createCredential(int usage) throws GSSException {
+        
+        GSSCredentialImpl newCred = new GSSCredentialImpl();
+        newCred.acquireCred(usage);
+        return newCred;
 
-        // TODO
-        return null;
     }
 
     public GSSCredential createCredential(GSSName aName, int lifetime,
         Oid mech, int usage) throws GSSException {
 
-        // TODO
-        return null;
+        GSSCredentialImpl newCred = new GSSCredentialImpl();
+        newCred.acquireCred(aName, lifetime, mech, usage);
+        return newCred;
+
     }
 
     public GSSCredential createCredential(GSSName aName, int lifetime,
         Oid[] mechs, int usage) throws GSSException {
 
-        // TODO
-        return null;
+        GSSCredentialImpl newCred = new GSSCredentialImpl();
+        newCred.acquireCred(aName, lifetime, mechs, usage);
+        return newCred;
     }
 
     public GSSContext createContext(GSSName peer, Oid mech, 
