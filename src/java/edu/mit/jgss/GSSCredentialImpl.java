@@ -274,6 +274,7 @@ public class GSSCredentialImpl implements GSSCredential {
         long[] min_status = {0};
         long[] lifetime = {0};
         int[] cred_usage = {0};
+        long[] time_rec = {0};
 
         gss_name_t_desc dName;
         gss_OID_set_desc dMechs;
@@ -289,6 +290,7 @@ public class GSSCredentialImpl implements GSSCredential {
         if (desiredMechs != null) {
             dMechs = new gss_OID_set_desc();
             for (int i = 0; i < desiredMechs.length; i++) {
+                System.out.println("desiredMechs.length = " + desiredMechs.length);
                 maj_status = gsswrapper.gss_add_oid_set_member(min_status,
                         desiredMechs[i].getNativeOid(), dMechs);
 
@@ -301,10 +303,13 @@ public class GSSCredentialImpl implements GSSCredential {
             dMechs = gsswrapper.GSS_C_NO_OID_SET;
         }
 
+        /* initialize internal gss_cred_id_t_desc */
+        internGSSCred = new gss_cred_id_t_desc();
+        
         /* acquire cred */
         maj_status = gsswrapper.gss_acquire_cred(min_status,
                 dName, timeReq, dMechs, credUsage, internGSSCred,
-                null, null);
+                null, time_rec);
 
         if (maj_status != gsswrapper.GSS_S_COMPLETE) {
             throw new GSSExceptionImpl((int)maj_status, (int)min_status[0]);
@@ -323,7 +328,14 @@ public class GSSCredentialImpl implements GSSCredential {
     GSSCredential acquireCred(GSSName aName, int lifetime, Oid mech,
             int usage) throws GSSException {
 
-        return acquireCred(aName, (long) lifetime, new Oid[] {mech}, usage);
+        Oid[] mechs = null;
+
+        if (mech != null) {
+            mechs = new Oid[1];
+            mechs[0] = mech;
+        }
+
+        return acquireCred(aName, (long) lifetime, mechs, usage);
 
     }
 
