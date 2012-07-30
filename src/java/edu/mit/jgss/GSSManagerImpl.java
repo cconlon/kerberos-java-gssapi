@@ -102,7 +102,15 @@ public class GSSManagerImpl extends GSSManager {
         Oid mech, int usage) throws GSSException {
 
         GSSCredentialImpl newCred = new GSSCredentialImpl();
-        newCred.acquireCred(aName, lifetime, mech, usage);
+        
+        Oid[] mechs = null;
+
+        if (mech != null) {
+            mechs = new Oid[1];
+            mechs[0] = mech;
+        }
+
+        newCred.acquireCred(aName, lifetime, mechs, usage);
         return newCred;
 
     }

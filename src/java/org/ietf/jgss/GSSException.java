@@ -81,6 +81,7 @@ public class GSSException extends Exception {
                 gsswrapper.GSS_C_MECH_CODE,
                 gsswrapper.GSS_C_NO_OID,
                 msg_ctx, storeBuff);
+
         if (ret != gsswrapper.GSS_S_COMPLETE) {
             this.minString = null;
         } else {

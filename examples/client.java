@@ -270,6 +270,8 @@ public class client implements gsswrapperConstants
                               maj_status);
             return -1;
         }
+        System.out.println("Credential Valid for " 
+                               + lifetime[0] + " seconds");
         maj_status = gsswrapper.gss_release_oid_set(min_status,
                 temp_mech_set);
         if (maj_status != GSS_S_COMPLETE) {
