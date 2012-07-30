@@ -53,7 +53,7 @@ public class GSSCredentialImpl implements GSSCredential {
             ret = gsswrapper.gss_release_cred(min_status, this.internGSSCred);
 
             if (ret != gsswrapper.GSS_S_COMPLETE) {
-                throw new GSSExceptionImpl(0, (int)min_status[0]);
+                throw new GSSExceptionImpl(0, (int) min_status[0]);
             }
             this.invalid = true;
         }
@@ -71,7 +71,7 @@ public class GSSCredentialImpl implements GSSCredential {
         gss_OID_set_desc temp_mech_set = new gss_OID_set_desc();
        
         if(invalid) {
-            throw new GSSException((int)gsswrapper.GSS_S_DEFECTIVE_CREDENTIAL, 
+            throw new GSSException((int) gsswrapper.GSS_S_DEFECTIVE_CREDENTIAL, 
                     0, "credential has been disposed, no longer valid");
         } 
 
@@ -82,12 +82,12 @@ public class GSSCredentialImpl implements GSSCredential {
                 temp_mech_set);
 
         if (maj_status != gsswrapper.GSS_S_COMPLETE) {
-            throw new GSSExceptionImpl((int)maj_status, (int)min_status[0]);
+            throw new GSSExceptionImpl((int) maj_status, (int) min_status[0]);
         }
 
         ret = tmpName.setInternGSSName(name);
         if (ret != 0) {
-            throw new GSSExceptionImpl((int)maj_status, (int)min_status[0]);
+            throw new GSSExceptionImpl((int) maj_status, (int) min_status[0]);
         }
 
         return tmpName;
@@ -117,7 +117,7 @@ public class GSSCredentialImpl implements GSSCredential {
         gss_OID_set_desc temp_mech_set = new gss_OID_set_desc();
        
         if(invalid) {
-            throw new GSSException((int)gsswrapper.GSS_S_DEFECTIVE_CREDENTIAL,
+            throw new GSSException((int) gsswrapper.GSS_S_DEFECTIVE_CREDENTIAL,
                     0, "credential has been disposed, no longer valid");
         }
 
@@ -126,7 +126,7 @@ public class GSSCredentialImpl implements GSSCredential {
                 temp_mech_set);
 
         if (maj_status != gsswrapper.GSS_S_COMPLETE) {
-            throw new GSSExceptionImpl((int)maj_status, (int)min_status[0]);
+            throw new GSSExceptionImpl((int) maj_status, (int) min_status[0]);
         }
 
         /* check for native INDEFINITE_LIFETIME and convert to Java
@@ -147,7 +147,7 @@ public class GSSCredentialImpl implements GSSCredential {
         gss_name_t_desc name = new gss_name_t_desc();
 
         if(invalid) {
-            throw new GSSException((int)gsswrapper.GSS_S_DEFECTIVE_CREDENTIAL,
+            throw new GSSException((int) gsswrapper.GSS_S_DEFECTIVE_CREDENTIAL,
                     0, "credential has been disposed, no longer valid");
         }
 
@@ -156,7 +156,7 @@ public class GSSCredentialImpl implements GSSCredential {
                 accept_lifetime, cred_usage);
 
         if (maj_status != gsswrapper.GSS_S_COMPLETE) {
-            throw new GSSExceptionImpl((int)maj_status, (int)min_status[0]);
+            throw new GSSExceptionImpl((int) maj_status, (int) min_status[0]);
         }
         
         if (cred_usage[0] == GSSCredential.INITIATE_ONLY ||
@@ -182,7 +182,7 @@ public class GSSCredentialImpl implements GSSCredential {
         gss_name_t_desc name = new gss_name_t_desc();
         
         if(invalid) {
-            throw new GSSException((int)gsswrapper.GSS_S_DEFECTIVE_CREDENTIAL,
+            throw new GSSException((int) gsswrapper.GSS_S_DEFECTIVE_CREDENTIAL,
                     0, "credential has been disposed, no longer valid");
         }
 
@@ -191,7 +191,7 @@ public class GSSCredentialImpl implements GSSCredential {
                 accept_lifetime, cred_usage);
 
         if (maj_status != gsswrapper.GSS_S_COMPLETE) {
-            throw new GSSExceptionImpl((int)maj_status, (int)min_status[0]);
+            throw new GSSExceptionImpl((int) maj_status, (int) min_status[0]);
         }
         
         if (cred_usage[0] == GSSCredential.ACCEPT_ONLY ||
@@ -218,7 +218,7 @@ public class GSSCredentialImpl implements GSSCredential {
         gss_OID_set_desc temp_mech_set = new gss_OID_set_desc();
         
         if(invalid) {
-            throw new GSSException((int)gsswrapper.GSS_S_DEFECTIVE_CREDENTIAL,
+            throw new GSSException((int) gsswrapper.GSS_S_DEFECTIVE_CREDENTIAL,
                     0, "credential has been disposed, no longer valid");
         }
 
@@ -227,7 +227,7 @@ public class GSSCredentialImpl implements GSSCredential {
                 temp_mech_set);
 
         if (maj_status != gsswrapper.GSS_S_COMPLETE) {
-            throw new GSSExceptionImpl((int)maj_status, (int)min_status[0]);
+            throw new GSSExceptionImpl((int) maj_status, (int) min_status[0]);
         }
 
         return cred_usage[0];
@@ -244,7 +244,7 @@ public class GSSCredentialImpl implements GSSCredential {
         gss_name_t_desc name = new gss_name_t_desc();
         
         if(invalid) {
-            throw new GSSException((int)gsswrapper.GSS_S_DEFECTIVE_CREDENTIAL,
+            throw new GSSException((int) gsswrapper.GSS_S_DEFECTIVE_CREDENTIAL,
                     0, "credential has been disposed, no longer valid");
         }
 
@@ -253,7 +253,7 @@ public class GSSCredentialImpl implements GSSCredential {
                 init_lifetime, accept_lifetime, cred_usage);
 
         if (maj_status != gsswrapper.GSS_S_COMPLETE) {
-            throw new GSSExceptionImpl((int)maj_status, (int)min_status[0]);
+            throw new GSSExceptionImpl((int) maj_status, (int) min_status[0]);
         }
 
         return cred_usage[0];
@@ -270,7 +270,7 @@ public class GSSCredentialImpl implements GSSCredential {
         gss_OID_set_desc temp_mech_set = new gss_OID_set_desc();
         
         if(invalid) {
-            throw new GSSException((int)gsswrapper.GSS_S_DEFECTIVE_CREDENTIAL,
+            throw new GSSException((int) gsswrapper.GSS_S_DEFECTIVE_CREDENTIAL,
                     0, "credential has been disposed, no longer valid");
         }
         
@@ -279,12 +279,12 @@ public class GSSCredentialImpl implements GSSCredential {
                 temp_mech_set);
 
         if (maj_status != gsswrapper.GSS_S_COMPLETE) {
-            throw new GSSExceptionImpl((int)maj_status, (int)min_status[0]);
+            throw new GSSExceptionImpl((int) maj_status, (int) min_status[0]);
         }
 
         /* temp_mech_set is a set, retrieve elements using getElement() and
            getCount() */
-        Oid[] mechs = new Oid[(int)temp_mech_set.getCount()];
+        Oid[] mechs = new Oid[(int) temp_mech_set.getCount()];
 
         for (int i = 0; i < temp_mech_set.getCount(); i++) {
             mechs[i] = new Oid(temp_mech_set.getElement(i).toDotString());
@@ -302,7 +302,7 @@ public class GSSCredentialImpl implements GSSCredential {
         int[] cred_usage = {0};
         
         if(invalid) {
-            throw new GSSException((int)gsswrapper.GSS_S_DEFECTIVE_CREDENTIAL,
+            throw new GSSException((int) gsswrapper.GSS_S_DEFECTIVE_CREDENTIAL,
                     0, "credential has been disposed, no longer valid");
         }
 
@@ -312,7 +312,7 @@ public class GSSCredentialImpl implements GSSCredential {
                 null, null);
 
         if (maj_status != gsswrapper.GSS_S_COMPLETE) {
-            throw new GSSExceptionImpl((int)maj_status, (int)min_status[0]);
+            throw new GSSExceptionImpl((int) maj_status, (int) min_status[0]);
         }
 
     }
@@ -375,8 +375,8 @@ public class GSSCredentialImpl implements GSSCredential {
                         desiredMechs[i].getNativeOid(), dMechs);
 
                 if (maj_status != gsswrapper.GSS_S_COMPLETE) {
-                    throw new GSSExceptionImpl((int)maj_status,
-                            (int)min_status[0]);
+                    throw new GSSExceptionImpl((int) maj_status,
+                            (int) min_status[0]);
                 }
             }
         } else {
@@ -396,7 +396,7 @@ public class GSSCredentialImpl implements GSSCredential {
                 null, time_rec);
 
         if (maj_status != gsswrapper.GSS_S_COMPLETE) {
-            throw new GSSExceptionImpl((int)maj_status, (int)min_status[0]);
+            throw new GSSExceptionImpl((int) maj_status, (int) min_status[0]);
         }
 
         this.invalid = false;

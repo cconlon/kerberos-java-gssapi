@@ -37,6 +37,7 @@ import org.ietf.jgss.Oid;
 import edu.mit.jgss.swig.gss_name_t_desc;
 import edu.mit.jgss.swig.gss_buffer_desc;
 import edu.mit.jgss.swig.gss_OID_desc;
+import edu.mit.jgss.swig.gss_OID_set_desc;
 import edu.mit.jgss.swig.gsswrapper;
 
 public class GSSNameImpl implements GSSName {
@@ -141,11 +142,6 @@ public class GSSNameImpl implements GSSName {
         long[] min_status = {0};
         int ret = 0;
 
-        // if this is not a MN, throw a GSSException with NAME_NOT_MN status code
-        if (!this.isMN()) {
-            throw new GSSExceptionImpl((int)maj_status, (int)min_status[0]);
-        }
-
         gss_buffer_desc exportName = new gss_buffer_desc();
         maj_status = gsswrapper.gss_export_name(min_status,
                 this.getInternGSSName(),
@@ -215,8 +211,23 @@ public class GSSNameImpl implements GSSName {
     }
 
     public boolean isMN() {
-        // TODO
+        
+        long maj_status = 0;
+        long[] min_status = {0};
+        gss_buffer_desc exportName = new gss_buffer_desc();
+
+        /* to test if our GSSName is a MN, we call the native
+           export_name function and check for the
+           GSS_S_NAME_NOT_MN error code */
+        maj_status = gsswrapper.gss_export_name(min_status,
+                this.getInternGSSName(),
+                exportName);
+
+        if (maj_status == gsswrapper.GSS_S_NAME_NOT_MN) {
+            return false;
+        }
         return true;
+
     }
 
     public gss_name_t_desc getInternGSSName() {

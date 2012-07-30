@@ -117,7 +117,7 @@ public class GSSNameTest extends TestCase {
      * 5) toString()
      * 6) getStringNameType()
      * 7) isAnonymous()
-     * 8) isMN()                TODO
+     * 8) isMN()
      *
      */
     public void testGSSNameMethods() throws GSSException {
@@ -228,10 +228,16 @@ public class GSSNameTest extends TestCase {
           
             
             /* (8) ----- testing GSSName.isMN ----- */
-            // TODO
-            //System.out.format("%-40s %10s%n", "... testing isMN()", "... passed");
+            if(!mechName.isMN()) {
+                fail("GSSName.isMN failed");
+            }
+            if(name.isMN()) {
+                fail("GSSName.isMN failed");
+            }
+            System.out.format("%-40s %10s%n", "... testing isMN()", "... passed");
 
         } catch (GSSException e) {
+            System.out.println(e.toString());
             fail("Failed during testGSSNameMethods");
         }
     }
