@@ -242,7 +242,6 @@ public class GSSNameImpl implements GSSName {
         return 0;
     }
 
-    /* TODO - reduce redundancy in the following two importName methods */
     GSSName importName(String nameStr, Oid nameType) throws GSSException {
         
         long maj_status = 0;
@@ -265,8 +264,7 @@ public class GSSNameImpl implements GSSName {
             !nameType.equals(GSSName.NT_USER_NAME) &&
             !nameType.equals(GSSName.NT_MACHINE_UID_NAME) &&
             !nameType.equals(GSSName.NT_STRING_UID_NAME) &&
-            !nameType.equals(GSSName.NT_ANONYMOUS) &&
-            !nameType.equals(GSSName.NT_EXPORT_NAME)) {
+            !nameType.equals(GSSName.NT_ANONYMOUS)) {
                 /* nametype is not supported */
                 if (DEBUG_ERR == true)
                     System.out.println("nametype not supported");
@@ -312,7 +310,6 @@ public class GSSNameImpl implements GSSName {
 
         /* Check supported nametypes. If it's not a supported one, or null,
            throw exception */
-        /* TODO: NT_EXPORT_NAME will only be called with byte[] */
         if (nameType != null &&
             !nameType.equals(GSSName.NT_HOSTBASED_SERVICE) &&
             !nameType.equals(GSSName.NT_USER_NAME) &&
