@@ -39,7 +39,7 @@ import edu.mit.jgss.swig.*;
 public class GSSCredentialImpl implements GSSCredential {
     
     /* representing our underlying SWIG-wrapped gss_cred_id_t object */
-    private gss_cred_id_t_desc internGSSCred;
+    private gss_cred_id_t_desc internGSSCred = new gss_cred_id_t_desc();
    
     /* has this cred been destroyed? */ 
     private boolean invalid = false;
@@ -330,7 +330,6 @@ public class GSSCredentialImpl implements GSSCredential {
         try {
 
             /* test some elements of our Cred to test for equality */
-
             if (this.invalid)
                 return false;
 
@@ -355,15 +354,26 @@ public class GSSCredentialImpl implements GSSCredential {
         long[] lifetime = {0};
         int[] cred_usage = {0};
         long[] time_rec = {0};
+        long inTimeReq;
 
         gss_name_t_desc dName;
         gss_OID_set_desc dMechs;
         
         /* handle null GSSName arg */
         if (desiredName != null) {
+            System.out.println("Setting desired Credential name");
             dName = desiredName.getInternGSSName();
         } else {
+            System.out.println("Using default name, GSS_C_NO_NAME");
             dName = gsswrapper.GSS_C_NO_NAME;
+        }
+
+        /* handle time req.  Java uses an int to store INDEFINITE, whereas
+           native uses a long */
+        if (timeReq == GSSCredential.INDEFINITE_LIFETIME) {
+            inTimeReq = (long) timeReq;
+        } else {
+            inTimeReq = gsswrapper.GSS_C_INDEFINITE;
         }
 
         /* handle null Oid arg, create gss_OID_set_desc from input set */
@@ -389,7 +399,7 @@ public class GSSCredentialImpl implements GSSCredential {
         /* acquire cred */
         maj_status = gsswrapper.gss_acquire_cred(min_status,
                 dName, 
-                timeReq, 
+                inTimeReq, 
                 dMechs, 
                 credUsage, 
                 internGSSCred,
@@ -409,6 +419,30 @@ public class GSSCredentialImpl implements GSSCredential {
         return acquireCred((GSSName) null,
                 GSSCredential.DEFAULT_LIFETIME, (Oid[]) null, usage);
 
+    }
+    
+    public gss_cred_id_t_desc getInternGSSCred() {
+        return this.internGSSCred;
+    }
+
+    public void setInternGSSCred(gss_cred_id_t_desc newCred) {
+       if (newCred != null) {
+           this.internGSSCred = newCred;
+           this.invalid = false;
+       } else {
+           this.internGSSCred = gsswrapper.GSS_C_NO_CREDENTIAL;
+           this.invalid = false;
+       }
+    }
+
+    public void freeGSSCredential() {
+        if (internGSSCred != null) {
+            long maj_status = 0;
+            long[] min_status = {0};
+
+            maj_status = gsswrapper.gss_release_cred(min_status,
+                    internGSSCred);
+        }
     }
 
 }

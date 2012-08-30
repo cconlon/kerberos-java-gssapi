@@ -41,7 +41,7 @@ import org.ietf.jgss.GSSManager;
 import edu.mit.jgss.swig.gsswrapper;
 
 public class GSSManagerImpl extends GSSManager {
-    
+
     public Oid[] getMechs() {
         // TODO
         return null;
@@ -91,10 +91,16 @@ public class GSSManagerImpl extends GSSManager {
     }
 
     public GSSCredential createCredential(int usage) throws GSSException {
-        
-        GSSCredentialImpl newCred = new GSSCredentialImpl();
-        newCred.acquireCred(usage);
-        return newCred;
+       
+        if (usage != GSSCredential.INITIATE_AND_ACCEPT ||
+            usage != GSSCredential.INITIATE_ONLY ||
+            usage != GSSCredential.ACCEPT_ONLY) {
+            throw new GSSException(GSSException.FAILURE);
+        } else { 
+            GSSCredentialImpl newCred = new GSSCredentialImpl();
+            newCred.acquireCred(usage);
+            return newCred;
+        }
 
     }
 
@@ -121,27 +127,28 @@ public class GSSManagerImpl extends GSSManager {
         GSSCredentialImpl newCred = new GSSCredentialImpl();
         newCred.acquireCred(aName, lifetime, mechs, usage);
         return newCred;
+
     }
 
     public GSSContext createContext(GSSName peer, Oid mech, 
         GSSCredential myCred, int lifetime) throws GSSException {
 
-        // TODO
-        return null;
+        return new GSSContextImpl(peer, mech, myCred, lifetime);
+
     }
 
     public GSSContext createContext(GSSCredential myCred) 
         throws GSSException {
 
-        // TODO
-        return null;
+        return new GSSContextImpl(myCred);
+
     }
 
     public GSSContext createContext(byte[] interProcessToken)
         throws GSSException {
 
-        // TODO
-        return null;
+        return new GSSContextImpl(interProcessToken);
+
     }
 
     public void addProviderAtFront(Provider p, Oid mech)

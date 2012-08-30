@@ -144,6 +144,7 @@ public class Util implements gsswrapperConstants{
             byte[] temp = null;
             for (int i = 0; i < 4; i++) {
                 data = inStream.read();
+                System.out.println("ReadToken... read() returned: " + data);
                 out.write(data);
             }
             temp = out.toByteArray();

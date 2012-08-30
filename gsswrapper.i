@@ -1670,10 +1670,12 @@ struct extensions
         }
     }
 
-    /*~gss_OID_desc() {
+    /* keep the java virtual machine from freeing gss_OID_desc memory.
+       If this isn't here, we get often get a segfault when running
+       client applications when Java tries to free memory it shouldn't. */
+    ~gss_OID_desc() {
         gss_OID_desc *oid = $self;
-        free(oid);
-    }*/
+    }
 }
 
 %extend gss_OID_set_desc {

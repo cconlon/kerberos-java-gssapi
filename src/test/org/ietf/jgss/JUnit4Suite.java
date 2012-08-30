@@ -7,7 +7,7 @@ import org.junit.runners.Suite.SuiteClasses;
 import org.ietf.jgss.OidTest;
 
 @RunWith(Suite.class)
-@SuiteClasses({OidTest.class, 
+@SuiteClasses({OidTest.class,
                MessagePropTest.class,
                ChannelBindingTest.class,
                GSSNameTest.class})

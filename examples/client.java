@@ -154,6 +154,7 @@ public class client implements gsswrapperConstants
             gss_OID_desc tmp = context.getMech_type();
             maj_status = gsswrapper.gss_delete_sec_context(min_status, 
                     context, output_token);
+            System.out.println("Deleted security context.");
 
             if (maj_status != GSS_S_COMPLETE) {
                 Util.displayError("deleting security context", 

@@ -162,6 +162,7 @@ public class GSSNameImpl implements GSSName {
     public String toString() {
         long maj_status = 0;
         long[] min_status = {0};
+        String outString;
 
         gss_buffer_desc output_name_buffer = new gss_buffer_desc();
         gss_OID_desc output_name_type = new gss_OID_desc();
@@ -175,7 +176,9 @@ public class GSSNameImpl implements GSSName {
             return null;
         }
 
-        return output_name_buffer.getValue();
+        outString = output_name_buffer.getValue();
+
+        return outString;
     }
 
     public Oid getStringNameType() throws GSSException {
@@ -237,6 +240,8 @@ public class GSSNameImpl implements GSSName {
     public int setInternGSSName(gss_name_t_desc newName) {
         if (newName != null) {
             this.internGSSName = newName;
+        } else {
+            this.internGSSName = gsswrapper.GSS_C_NO_NAME;
         }
 
         return 0;
@@ -342,6 +347,16 @@ public class GSSNameImpl implements GSSName {
         }
         
         return this;
+    }
+
+    public void freeGSSName() {
+        if (internGSSName != null) {
+            long maj_status = 0;
+            long[] min_status = {0};
+
+            maj_status = gsswrapper.gss_release_name(min_status,
+                    internGSSName);
+        }
     }
 
 }

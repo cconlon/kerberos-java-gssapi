@@ -10,5 +10,6 @@ public class GSSExceptionImpl extends GSSException {
         super(majorCode);
         super.setMinor(minorCode, null);
     }
+
 }
 

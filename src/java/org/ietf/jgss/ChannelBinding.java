@@ -2,7 +2,7 @@ package org.ietf.jgss;
 
 import java.net.InetAddress;
 import java.util.Arrays;
-import edu.mit.jgss.swig.gss_channel_bindings_struct;
+import edu.mit.jgss.swig.*;
 
 /**
  * Class to represent GSS-API caller-provided channel binding information.
@@ -17,12 +17,16 @@ import edu.mit.jgss.swig.gss_channel_bindings_struct;
  */
 public class ChannelBinding {
 
-    private gss_channel_bindings_struct channelBindStruct;
+    protected gss_channel_bindings_struct channelBindStruct;
 
-    private InetAddress initAddr;   /* Address of the context initiator */
-    private InetAddress acceptAddr; /* Address of the context acceptor */
-    private byte[] appData;         /* Application-supplied data to be used
-                                       as part of the channel bindings */
+    /* Address of the context initiator */
+    private InetAddress initAddr = null;
+
+    /* Address of the context acceptor */
+    private InetAddress acceptAddr = null;
+
+    /* Application-supplied data to be used as part of the channel bindings */
+    private byte[] appData = null;
 
     /**
      * Creates ChannelBinding object with the given address and data
@@ -36,9 +40,47 @@ public class ChannelBinding {
      */
     public ChannelBinding(InetAddress initAddr, InetAddress acceptAddr,
                           byte[] appData) {
+
         this(appData);
-        this.initAddr = initAddr;
-        this.acceptAddr = acceptAddr;
+
+        /* If the user passes in null values for all arguments, we'll
+           just set our internal gss_channel_bindings_struct equal to
+           GSS_C_NO_CHANNEL_BINDINGS */
+        if (initAddr == null && acceptAddr == null && appData == null) {
+            channelBindStruct = gsswrapper.GSS_C_NO_CHANNEL_BINDINGS;
+            return;
+        } 
+
+        /* otherwise, continue with setup as normal */
+        channelBindStruct = new gss_channel_bindings_struct();
+
+        if (initAddr != null) {
+            this.initAddr = initAddr;
+            channelBindStruct.setInitiator_addrtype(gsswrapper.GSS_C_AF_INET);
+            gss_buffer_desc initAddrBuff = new gss_buffer_desc();
+            gsswrapper.setDescArray(initAddrBuff, initAddr.getAddress());
+            initAddrBuff.setLength(initAddr.getAddress().length);
+            channelBindStruct.setInitiator_address(initAddrBuff);
+        }
+
+        if (acceptAddr != null) {
+            this.acceptAddr = acceptAddr;
+            channelBindStruct.setAcceptor_addrtype(gsswrapper.GSS_C_AF_INET);
+            gss_buffer_desc acceptAddrBuff = new gss_buffer_desc();
+            gsswrapper.setDescArray(acceptAddrBuff, acceptAddr.getAddress());
+            acceptAddrBuff.setLength(acceptAddr.getAddress().length);
+            channelBindStruct.setAcceptor_address(acceptAddrBuff);
+        }
+
+        if (appData != null) {
+            setAppData(appData);
+
+            gss_buffer_desc appBuffer = new gss_buffer_desc();
+            gsswrapper.setDescArray(appBuffer, appData);
+            appBuffer.setLength(appData.length);
+            channelBindStruct.setApplication_data(appBuffer);
+        }
+
     }
 
     /**
@@ -51,8 +93,16 @@ public class ChannelBinding {
     public ChannelBinding(byte[] appData) {
 
         if (appData != null) {
-            this.appData = new byte[appData.length];
-            System.arraycopy(appData, 0, this.appData, 0, appData.length);
+
+            channelBindStruct = new gss_channel_bindings_struct();
+            setAppData(appData);
+
+            gss_buffer_desc appBuffer = new gss_buffer_desc();
+            gsswrapper.setDescArray(appBuffer, appData);
+            appBuffer.setLength(appData.length);
+            channelBindStruct.setApplication_data(appBuffer);
+        } else {
+            channelBindStruct = gsswrapper.GSS_C_NO_CHANNEL_BINDINGS;
         }
     }
 
@@ -119,4 +169,12 @@ public class ChannelBinding {
 
         return true;
     }
+
+    private void setAppData(byte[] appData) {
+        if (appData != null) {
+            this.appData = new byte[appData.length];
+            System.arraycopy(appData, 0, this.appData, 0, appData.length);
+        }
+    }
+    
 }

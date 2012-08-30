@@ -4,13 +4,14 @@ import java.util.regex.*;
 import java.util.Arrays;
 import java.io.*;
 
-import edu.mit.jgss.swig.gss_OID_desc;
 import edu.mit.jgss.OidUtil;
+import edu.mit.jgss.GSSExceptionImpl;
+import edu.mit.jgss.swig.*;
 
 public class Oid {
 
-    private gss_OID_desc oid;
-    private byte[] derOid;
+    protected gss_OID_desc oid = null;
+    protected byte[] derOid;
     
     /**
      * Creates a new Oid object from a string representation of the Oid's
@@ -26,6 +27,7 @@ public class Oid {
             this.oid = new gss_OID_desc(strOid);
         } else {
             System.out.println("failed to verify OID string");
+            freeStructs();
             throw new GSSException(GSSException.FAILURE);
         }
     }
@@ -41,6 +43,7 @@ public class Oid {
     public Oid(InputStream derOid) throws GSSException {
 
         if (derOid == null) {
+            freeStructs();
             throw new NullPointerException();
         }
 
@@ -49,6 +52,7 @@ public class Oid {
             boolean valid = OidUtil.verifyOid(tmpOid);
 
             if (!valid) {
+                freeStructs();
                 throw new GSSException(GSSException.FAILURE);
             }
         
@@ -64,6 +68,7 @@ public class Oid {
             System.arraycopy(tmpOid, 0, this.derOid, 0, tmpOid.length);
 
             } catch (IOException e) {
+                freeStructs();
                 throw new GSSException(GSSException.FAILURE);
             }
     }
@@ -79,11 +84,13 @@ public class Oid {
     public Oid(byte[] derOid) throws GSSException {
 
         if (derOid == null) {
+            freeStructs();
             throw new NullPointerException();
         }
         
         boolean valid = OidUtil.verifyOid(derOid);
         if (!valid) {
+            freeStructs();
             throw new GSSException(GSSException.FAILURE);
         }
 
@@ -146,8 +153,9 @@ public class Oid {
 
         Oid tmp = (Oid) obj;
 
-        if (tmp == null)
+        if (tmp == null) {
             throw new NullPointerException("Input Obj is null");
+        }
 
         if (Arrays.equals(this.getDER(), tmp.getDER()))
             return true;
@@ -213,8 +221,21 @@ public class Oid {
         return retOid;
     }
 
+    private void freeStructs() throws GSSException {
+
+        if (oid != null) {
+            long maj_status = 0;
+            long[] min_status = {0};
+
+            maj_status = gsswrapper.gss_release_oid(min_status, oid);
+            if (maj_status != gsswrapper.GSS_S_COMPLETE) {
+                throw new GSSExceptionImpl((int)maj_status, (int)min_status[0]);
+            }
+        }
+    }
+
     public gss_OID_desc getNativeOid() {
-        return  this.oid;
+        return this.oid;
     }
 
     public void setNativeOid(gss_OID_desc newOid) {
