@@ -12,7 +12,6 @@ import org.ietf.jgss.GSSException;
 public class OidTest extends TestCase {
 
     public void testOidStringConstructor() throws GSSException {
-        System.out.println("DEBUG... entered testOidStringConstructor");
         try {
             Oid testOid = new Oid("asdfasdf");
             fail("No exception was thrown");
@@ -20,18 +19,14 @@ public class OidTest extends TestCase {
             // We expect to fail, proceed
         }
 
-        System.out.println("DEBUG... finished first testOidStringConstructor test");
-        
         try {
             Oid testOid = new Oid("1.2.3.4");
         } catch (GSSException e) {
             fail("new Oid(String) failed");
         }
-        System.out.println("DEBUG... finished second testOidStringConstructor test");
     }
 
     public void testOidMethods() throws GSSException {
-        System.out.println("DEBUG... entered testOidMethods");
         String oidString = "1.2.840.113554.1.2.2"; 
         byte[] oidDER = {(byte)0x06, (byte)0x09, (byte)0x2A, (byte)0x86, 
                          (byte)0x48, (byte)0x86, (byte)0xF7, (byte)0x12, 
