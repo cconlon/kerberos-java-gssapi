@@ -57,7 +57,8 @@ public class GSSManagerImpl extends GSSManager {
         return null;
     }
 
-    public GSSName createName(String nameStr, Oid nameType) throws GSSException {
+    public GSSName createName(String nameStr, Oid nameType) 
+        throws GSSException {
 
         GSSNameImpl newName = new GSSNameImpl();
         newName.importName(nameStr, nameType);
@@ -65,7 +66,8 @@ public class GSSManagerImpl extends GSSManager {
 
     }
 
-    public GSSName createName(byte[] name, Oid nameType) throws GSSException {
+    public GSSName createName(byte[] name, Oid nameType) 
+        throws GSSException {
 
         GSSNameImpl newName = new GSSNameImpl();
         newName.importName(name, nameType);
@@ -82,7 +84,8 @@ public class GSSManagerImpl extends GSSManager {
 
     }
 
-    public GSSName createName(byte[] name, Oid nameType, Oid mech) throws GSSException {
+    public GSSName createName(byte[] name, Oid nameType, Oid mech) 
+        throws GSSException {
 
         GSSName newName = createName(name, nameType);
         GSSName canonicalizedName = newName.canonicalize(mech);
@@ -90,7 +93,8 @@ public class GSSManagerImpl extends GSSManager {
     
     }
 
-    public GSSCredential createCredential(int usage) throws GSSException {
+    public GSSCredential createCredential(int usage) 
+        throws GSSException {
        
         if (usage != GSSCredential.INITIATE_AND_ACCEPT ||
             usage != GSSCredential.INITIATE_ONLY ||

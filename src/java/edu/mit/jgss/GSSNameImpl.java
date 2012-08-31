@@ -62,7 +62,8 @@ public class GSSNameImpl implements GSSName {
 
         if (maj_status != gsswrapper.GSS_S_COMPLETE) {
             if (DEBUG_ERR == true)
-                System.out.println("gss_compare_name failed... maj_status = " + maj_status);
+                System.out.println("gss_compare_name failed... maj_status = " 
+                        + maj_status);
             throw new GSSExceptionImpl((int)maj_status, (int)min_status[0]);
         } 
 
@@ -130,7 +131,8 @@ public class GSSNameImpl implements GSSName {
         ret = canonicalName.setInternGSSName(tmpName);
         if (ret != 0) {
             if (DEBUG_ERR == true)
-                System.err.println("setInternGSSName failed after canonicalize");
+                System.err.println("setInternGSSName failed after " + 
+                        "canonicalize");
             throw new GSSExceptionImpl((int)maj_status, (int)min_status[0]);
         }
 

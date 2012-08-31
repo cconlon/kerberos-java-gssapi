@@ -44,7 +44,8 @@ public class DerUtil {
      * object in order to be able to pass them back to the underlying
      * native GSSAPI implementation.
      */ 
-    public static DerHeader getHeader(InputStream in) throws GSSException, IOException {
+    public static DerHeader getHeader(InputStream in) 
+        throws GSSException, IOException {
 
         int length = 0;
         int tag, b;
