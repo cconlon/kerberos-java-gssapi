@@ -19,7 +19,8 @@ public interface GSSName {
      *
      * Native GSS-API equivalent = GSS_C_NT_HOSTBASED_SERVICE
      */
-    public static final Oid NT_HOSTBASED_SERVICE = Oid.getNewOid("1.2.840.113554.1.2.1.4");
+    public static final Oid NT_HOSTBASED_SERVICE 
+        = Oid.getNewOid("1.2.840.113554.1.2.1.4");
 
     /**
      * Name type to indicate a named user on a local system. 
@@ -30,7 +31,8 @@ public interface GSSName {
      *
      * Native GSS-API equivalent = GSS_C_NT_USER_NAME
      */
-    public static final Oid NT_USER_NAME = Oid.getNewOid("1.2.840.113554.1.2.1.1");
+    public static final Oid NT_USER_NAME 
+        = Oid.getNewOid("1.2.840.113554.1.2.1.1");
 
     /**
      * Name type to indicate a numeric user identifier corresponding to a
@@ -42,7 +44,8 @@ public interface GSSName {
      *
      * Native GSS-API equivalent = GSS_C_NT_MACHINE_UID_NAME
      */
-    public static final Oid NT_MACHINE_UID_NAME = Oid.getNewOid("1.2.840.113554.1.2.1.2");
+    public static final Oid NT_MACHINE_UID_NAME 
+        = Oid.getNewOid("1.2.840.113554.1.2.1.2");
 
     /**
      * Name type to indicate a string of digits representing the numeric
@@ -54,7 +57,8 @@ public interface GSSName {
      *
      * Native GSS-API equivalent = GSS_C_NT_STRING_UID_NAME
      */
-    public static final Oid NT_STRING_UID_NAME = Oid.getNewOid("1.2.840.113554.1.2.1.3");
+    public static final Oid NT_STRING_UID_NAME 
+        = Oid.getNewOid("1.2.840.113554.1.2.1.3");
 
     /**
      * Name type for representing an anonymous entity.
@@ -64,7 +68,8 @@ public interface GSSName {
      *
      * Native GSS-API equivalent = GSS_C_NT_ANONYMOUS 
      */
-    public static final Oid NT_ANONYMOUS = Oid.getNewOid("1.3.6.1.5.6.3");
+    public static final Oid NT_ANONYMOUS 
+        = Oid.getNewOid("1.3.6.1.5.6.3");
 
     /**
      * Name type used to indicate an exported name produced by the export
@@ -75,7 +80,8 @@ public interface GSSName {
      *
      * Native GSS-API equivalent =  GSS_C_NT_EXPORT_NAME;
      */
-    public static final Oid NT_EXPORT_NAME = Oid.getNewOid("1.3.6.1.5.6.4");
+    public static final Oid NT_EXPORT_NAME 
+        = Oid.getNewOid("1.3.6.1.5.6.4");
 
     /**
      * Compares two GSSName objects to determine if they refer to the same

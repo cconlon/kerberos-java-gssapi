@@ -234,7 +234,8 @@ public class GSSNameTest extends TestCase {
             if(name.isMN()) {
                 fail("GSSName.isMN failed");
             }
-            System.out.format("%-40s %10s%n", "... testing isMN()", "... passed");
+            System.out.format("%-40s %10s%n", "... testing isMN()", 
+                    "... passed");
 
         } catch (GSSException e) {
             System.out.println(e.toString());

@@ -46,15 +46,18 @@ public class OidTest extends TestCase {
 
             Oid testoid2 = new Oid(oidDER);
             if (!oidString.equals(testoid2.toString())) {
-                fail("Oid.toString failed using DER-encoded OID, " + testoid2.toString());
+                fail("Oid.toString failed using DER-encoded OID, " + 
+                        testoid2.toString());
             }
-            System.out.format("%-40s %10s%n", "... testing toString()", "... passed");
+            System.out.format("%-40s %10s%n", "... testing toString()", 
+                    "... passed");
 
             /* testing Oid.getDER() method */
             if (!Arrays.equals(testoid.getDER(), testoid2.getDER())) {
                 fail("Oid.getDER failed during Oid comparison");
             }
-            System.out.format("%-40s %10s%n", "... testing getDER()", "... passed");
+            System.out.format("%-40s %10s%n", "... testing getDER()", 
+                    "... passed");
 
             /* testing Oid.containedIn(Oid[]) method */
             Oid[] oidArray = new Oid[2];
@@ -69,7 +72,8 @@ public class OidTest extends TestCase {
             if (testoid3.containedIn(oidArray)) {
                 fail("Oid.containedIn failed");
             }
-            System.out.format("%-40s %10s%n", "... testing containedIn()", "... passed");
+            System.out.format("%-40s %10s%n", "... testing containedIn()", 
+                    "... passed");
 
         } catch (GSSException e) {
             throw e;
@@ -81,7 +85,8 @@ public class OidTest extends TestCase {
 
         } catch (GSSException e) {
             // We expect this to fail verification
-            System.out.format("%-40s %10s%n", "... testing Oid DER validation", "... passed");
+            System.out.format("%-40s %10s%n", "... testing Oid DER validation", 
+                    "... passed");
         }
     }
 
@@ -115,7 +120,8 @@ public class OidTest extends TestCase {
         } catch (GSSException e) {
             fail("failed when testing Oid.equals() method");
         }
-        System.out.format("%-40s %10s%n", "... testing equals()", "... passed");
+        System.out.format("%-40s %10s%n", "... testing equals()", 
+                "... passed");
     }
 
 }
