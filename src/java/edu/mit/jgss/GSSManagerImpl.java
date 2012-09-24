@@ -38,23 +38,112 @@ import org.ietf.jgss.GSSCredential;
 import org.ietf.jgss.GSSName;
 import org.ietf.jgss.GSSManager;
 
-import edu.mit.jgss.swig.gsswrapper;
+import edu.mit.jgss.swig.*;
 
 public class GSSManagerImpl extends GSSManager {
 
+    /* MIT gssapi only supports the following two mechanisms:
+       1) gss_mech_krb5         1.2.840.113554.1.2.2
+       2) gss_mech_krb5_old     1.3.5.1.5.2
+     */
     public Oid[] getMechs() {
-        // TODO
-        return null;
+
+        /* because this implementation doesn't support a service
+           provider framwork, this method just returns the
+           mechanisms supported by MIT's GSSAPI, listed above */
+
+        Oid[] mechs = new Oid[2];
+
+        try {
+
+            mechs[0] = new OidImpl("1.2.840.113554.1.2.2");
+            mechs[1] = new OidImpl("1.3.5.1.5.2");
+
+        } catch (GSSException e) {
+            /* ignore and continue */
+        }
+
+        return mechs;
     }
 
     public Oid[] getNamesForMech(Oid mech) {
-        // TODO
-        return null;
+        
+        long maj_status = 0;
+        long[] min_status = {0};
+        gss_OID_set_desc mech_names = new gss_OID_set_desc();
+        gss_buffer_desc oid_name = new gss_buffer_desc();
+        Oid[] mechNames;
+        int numNames = 0;
+
+        try {
+            OidImpl tmpMech = new OidImpl(mech.toString());
+
+            maj_status = gsswrapper.gss_inquire_names_for_mech(min_status,
+                    tmpMech.getNativeOid(), mech_names);
+
+            if (maj_status != gsswrapper.GSS_S_COMPLETE) {
+                /* just return null since we can't throw an exception here */
+                return null;
+            }
+
+            numNames = (int) mech_names.getCount();
+            mechNames = new Oid[numNames];
+            for (int i = 0; i < numNames; i++) {
+                maj_status = gsswrapper.gss_oid_to_str(min_status,
+                        mech_names.getElement(i), oid_name);
+                mechNames[i] = new Oid(oid_name.getValue());
+            }
+
+            gsswrapper.gss_release_buffer(min_status, oid_name);
+            gsswrapper.gss_release_oid_set(min_status, mech_names);
+            tmpMech.freeOid();
+
+        } catch (GSSException e) {
+            return null;
+        }
+
+        return mechNames;
     }
 
     public Oid[] getMechsForName(Oid nameType) {
-        // TODO
-        return null;
+
+        long maj_status = 0;
+        long[] min_status = {0};
+        gss_OID_set_desc mech_types = new gss_OID_set_desc();
+        gss_buffer_desc mech_name = new gss_buffer_desc();
+        Oid[] mechs;
+        int numMechs;
+
+        try {
+
+            /* create a gss_name_t_desc from the nametype we got */
+            GSSNameImpl tmpName = (GSSNameImpl) createName("test", nameType);
+
+            maj_status = gsswrapper.gss_inquire_mechs_for_name(min_status,
+                    tmpName.getInternGSSName(), mech_types);
+
+            if (maj_status != gsswrapper.GSS_S_COMPLETE) {
+                /* just return null since we can't throw an exception here */
+                return null;
+            }
+
+            numMechs = (int) mech_types.getCount();
+            mechs = new Oid[numMechs];
+            for (int i = 0; i < numMechs; i++) {
+                maj_status = gsswrapper.gss_oid_to_str(min_status,
+                        mech_types.getElement(i), mech_name);
+                mechs[i] = new Oid(mech_name.getValue());
+            }
+
+            gsswrapper.gss_release_buffer(min_status, mech_name);
+            gsswrapper.gss_release_oid_set(min_status, mech_types);
+            tmpName.freeGSSName();
+        
+        } catch (GSSException e) {
+            return null;
+        }
+
+        return mechs;
     }
 
     public GSSName createName(String nameStr, Oid nameType) 
@@ -155,14 +244,19 @@ public class GSSManagerImpl extends GSSManager {
 
     }
 
+    /* this gssapi implementation is wrapped around MIT Kerberos
+       GSSAPI, which only supported Kerberos v5. Thus, at this time, 
+       a service provider framework is not supported. RFC 5653 states that a 
+       service provider framework is optional, and the implementation should 
+       throw a GSSEXception with GSSException.UNAVAILABLE if not supported. */
     public void addProviderAtFront(Provider p, Oid mech)
         throws GSSException {
-        // TODO
+            throw new GSSException(GSSException.UNAVAILABLE);
     }
 
     public void addProviderAtEnd(Provider p, Oid mech)
         throws GSSException {
-        // TODO
+            throw new GSSException(GSSException.UNAVAILABLE);
     }
 
 }
