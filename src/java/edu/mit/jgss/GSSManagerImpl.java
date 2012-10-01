@@ -42,14 +42,14 @@ import edu.mit.jgss.swig.*;
 
 public class GSSManagerImpl extends GSSManager {
 
-    /* MIT gssapi only supports the following two mechanisms:
+    /* MIT GSSAPI only supports the following two mechanisms:
        1) gss_mech_krb5         1.2.840.113554.1.2.2
        2) gss_mech_krb5_old     1.3.5.1.5.2
      */
     public Oid[] getMechs() {
 
-        /* because this implementation doesn't support a service
-           provider framwork, this method just returns the
+        /* because this implementation doesn't currently support a 
+           service provider framwork, this method just returns the
            mechanisms supported by MIT's GSSAPI, listed above */
 
         Oid[] mechs = new Oid[2];

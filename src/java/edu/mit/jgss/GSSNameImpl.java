@@ -170,13 +170,12 @@ public class GSSNameImpl implements GSSName {
         gss_OID_desc output_name_type = new gss_OID_desc();
 
         maj_status = gsswrapper.gss_display_name(min_status,
-                this.getInternGSSName(),
+                this.internGSSName,
                 output_name_buffer,
                 output_name_type);
 
-        if (maj_status != gsswrapper.GSS_S_COMPLETE) {
+        if (maj_status != gsswrapper.GSS_S_COMPLETE)
             return null;
-        }
 
         outString = output_name_buffer.getValue();
 

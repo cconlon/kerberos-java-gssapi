@@ -223,8 +223,6 @@ public class GSSContextImpl implements GSSContext {
         this.invalid = false;
 
         /* free native structures */
-        gsswrapper.gss_release_name(min_status, src_name);
-        gsswrapper.gss_release_name(min_status, targ_name);
         gsswrapper.gss_release_buffer(min_status, sname);
         gsswrapper.gss_release_buffer(min_status, tname);
         gsswrapper.gss_release_buffer(min_status, processToken);

@@ -41,6 +41,8 @@ import java.net.*;
 import edu.mit.jgss.swig.*;
 
 public class Util implements gsswrapperConstants{
+
+    private static boolean DEBUG = false;
     
     /*
      * Display error and exit program.
@@ -104,26 +106,35 @@ public class Util implements gsswrapperConstants{
      */
     public static int WriteToken(OutputStream outStream, byte[] outputToken)
     {
-        System.out.println("Entered WriteToken...");
+        if (DEBUG)
+            System.out.println("Entered WriteToken...");
        
         try { 
 
             /* First send the size of our byte array */
             byte[] size = Util.intToByteArray(outputToken.length);
-            System.out.println("... sending byte array size: " +
-                               Util.byteArrayToInt(size));
+
+            if (DEBUG)
+                System.out.println("... sending byte array size: " +
+                    Util.byteArrayToInt(size));
             outStream.write(size);
 
             /* Now send our actual byte array */
-            System.out.println("... sending byte array: ");
-            printByteArray(outputToken);
-            System.out.println("... outputToken.length = " + 
-                               outputToken.length);
+            if (DEBUG) {
+                System.out.println("... sending byte array: ");
+                printByteArray(outputToken);
+                System.out.println("... outputToken.length = " + 
+                    outputToken.length);
+            }
             outStream.write(outputToken);
+
             return 0;
+
         } catch (IOException e) {
+
             e.printStackTrace();
             return -1;
+
         }
     }
    
@@ -133,24 +144,32 @@ public class Util implements gsswrapperConstants{
      */ 
     public static byte[] ReadToken(InputStream inStream) 
     {
-        System.out.println("Entered ReadToken...");
+        if (DEBUG)
+            System.out.println("Entered ReadToken...");
+
         byte[] inputTokenBuffer = null;
+
         try {
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
+
             int data;
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
 
             /* First read the incomming array size (first 4 bytes) */
             int array_size = 0;
             byte[] temp = null;
             for (int i = 0; i < 4; i++) {
                 data = inStream.read();
-                System.out.println("ReadToken... read() returned: " + data);
+                if (DEBUG)
+                    System.out.println("ReadToken... read() returned: " + data);
                 out.write(data);
             }
             temp = out.toByteArray();
             array_size = Util.byteArrayToInt(temp);
             out.reset();
-            System.out.println("... got byte array size = " + array_size);
+
+            if (DEBUG)
+                System.out.println("... got byte array size = " + array_size);
+
             if (array_size < 0)
                 return null;
 
@@ -159,10 +178,15 @@ public class Util implements gsswrapperConstants{
                 data = inStream.read();
                 out.write(data);
             }
-            System.out.println("... got data: ");
-            Util.printByteArray(out.toByteArray());
-            System.out.println("... returning from ReadToken, success");
+
+            if (DEBUG) {
+                System.out.println("... got data: ");
+                Util.printByteArray(out.toByteArray());
+                System.out.println("... returning from ReadToken, success");
+            }
+
             return out.toByteArray();
+
         } catch (IOException e) {
             e.printStackTrace();
             return null;
