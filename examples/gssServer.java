@@ -104,8 +104,8 @@ public class gssServer {
             MessageProp supplInfo = new MessageProp(true);
 
             try {
-                System.out.println("\nwaiting for client connection..."
-                        + "--------------------------");
+                System.out.println("\nwaiting for client connection"
+                        + "-----------------------------");
                 clientSocket = serverSocket.accept();
                 
                 /* get input and output streams */
@@ -121,7 +121,7 @@ public class gssServer {
                 while (!context.isEstablished()) {
 
                     inToken = Util.ReadToken(clientIn);
-                    System.out.println("Got token from client...");
+                    System.out.println("Received token from client...");
 
                     System.out.println("Calling acceptSecContext");
                     outToken = context.acceptSecContext(inToken,
@@ -142,40 +142,36 @@ public class gssServer {
                 Oid mechName = context.getMech();
                 System.out.println("Security context established with " +
                         peerName.toString());
-                System.out.println(" | Target Name = " + targetName.toString());
-                System.out.println(" | Mechanism = " + mechName.toString());
-                System.out.println(" | AnonymityState = " + context.getAnonymityState());
-                System.out.println(" | ConfState = " + context.getConfState());
-                System.out.println(" | CredDelegState = " + context.getCredDelegState());
-                System.out.println(" | IntegState = " + context.getIntegState());
-                System.out.println(" | Lifetime = " + context.getLifetime() + " sec");
-                System.out.println(" | MutualAuthState = " + context.getMutualAuthState());
-                System.out.println(" | ReplayDetState = " + context.getReplayDetState());
-                System.out.println(" | SequenceDetState = " + context.getSequenceDetState());
-                System.out.println(" | Is initiator? " + context.isInitiator());
-                System.out.println(" | Is Prot Ready? " + context.isProtReady());
+                Util.printSubString("Target Name", targetName.toString());
+                Util.printSubString("Mechanism", mechName.toString());
+                Util.printSubString("AnonymityState", context.getAnonymityState());
+                Util.printSubString("ConfState", context.getConfState());
+                Util.printSubString("CredDelegState", context.getCredDelegState());
+                Util.printSubString("IntegState", context.getIntegState());
+                Util.printSubString("Lifetime", context.getLifetime());
+                Util.printSubString("MutualAuthState", context.getMutualAuthState());
+                Util.printSubString("ReplayDetState", context.getReplayDetState());
+                Util.printSubString("SequenceDetState", context.getSequenceDetState());
+                Util.printSubString("Is initiator?", context.isInitiator());
+                Util.printSubString("Is Prot Ready?", context.isProtReady());
 
                 /* read message sent by the client */
                 inToken = Util.ReadToken(clientIn);
-                System.out.println("Got token from client...");
+                System.out.println("Received token from client...");
 
                 /* unwrap the message */
                 buffer = context.unwrap(inToken, 0, inToken.length, supplInfo);
-                System.out.println("Message = " + new String(buffer));
+                System.out.println("Message received from client ('" + 
+                        new String(buffer) + "')");
 
                 /* print other supplementary per-message status info */
                 System.out.println("Message from " +
                         peerName.toString() + " arrived.");
-                System.out.println(" | Was it encrypted?\t" + 
-                        supplInfo.getPrivacy());
-                System.out.println(" | Duplicate Token?\t" +
-                        supplInfo.isDuplicateToken());
-                System.out.println(" | Old Token?\t\t" +
-                        supplInfo.isOldToken());
-                System.out.println(" | Unsequenced Token?\t" +
-                        supplInfo.isUnseqToken());
-                System.out.println(" | Gap Token?\t\t" +
-                        supplInfo.isGapToken() + "\n");
+                Util.printSubString("Was it encrypted?", supplInfo.getPrivacy());
+                Util.printSubString("Duplicate Token?", supplInfo.isDuplicateToken());
+                Util.printSubString("Old Token?", supplInfo.isOldToken());
+                Util.printSubString("Unsequenced Token?", supplInfo.isUnseqToken());
+                Util.printSubString("Gap Token?", supplInfo.isGapToken());
 
                 supplInfo.setPrivacy(true);     // privacy requested
                 supplInfo.setQOP(0);            // default QOP

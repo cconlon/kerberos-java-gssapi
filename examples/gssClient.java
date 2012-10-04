@@ -82,6 +82,8 @@ public class gssClient {
         serverIn.close();
         serverOut.close();
         clientSocket.close();
+
+        System.out.println("\nShut down GSS-API and closed connection to server");
     }
 
     /**
@@ -177,20 +179,30 @@ public class gssClient {
 
                 if (!context.isEstablished()) {
                     inToken = Util.ReadToken(serverIn); 
-                    System.out.println("Read token from server... ");
+                    System.out.println("Received token from server... ");
                 }
             }
 
-            GSSName peerName = context.getSrcName();
+            GSSName peerName = context.getTargName();
+            GSSName srcName = context.getSrcName();
             System.out.println("Security context established with " + peer);
-            System.out.println("Context lifetime = " + context.getLifetime());
+            Util.printSubString("Source Name", srcName.toString());
+            Util.printSubString("Mechanism", context.getMech().toString());
+            Util.printSubString("AnonymityState", context.getAnonymityState());
+            Util.printSubString("ConfState", context.getConfState());
+            Util.printSubString("CredDelegState", context.getCredDelegState());
+            Util.printSubString("IntegState", context.getIntegState());
+            Util.printSubString("Lifetime", context.getLifetime());
+            Util.printSubString("MutualAuthState", context.getMutualAuthState());
+            Util.printSubString("ReplayDetState", context.getReplayDetState());
+            Util.printSubString("SequenceDetState", context.getSequenceDetState());
+            Util.printSubString("Is initiator?", context.isInitiator());
+            Util.printSubString("Is Prot Ready?", context.isProtReady());
 
             /* Test exporting/importing established security context */
             byte[] exportedContext = context.export();
             context = mgr.createContext(exportedContext);
             GSSName serverInfo2 = context.getTargName();
-            System.out.println("after context import, targetName = "
-                + serverInfo2.toString());
      
         } catch (GSSException e) {
             System.out.println("GSS-API error during context establishment: "
@@ -225,28 +237,25 @@ public class gssClient {
             outToken = context.wrap(buffer, 0, buffer.length, messagInfo);
             err = Util.WriteToken(serverOut, outToken);
             if (err == 0) {
-                System.out.println("Sent message to server...");
+                System.out.println("Sent message to server ('" +
+                        msg + "')");
 
                 /* Read signature block from the server */ 
                 inToken = Util.ReadToken(serverIn);
-                System.out.println("Read sig block from server...");
+                System.out.println("Received sig block from server...");
 
                 GSSName serverInfo = context.getTargName();
                 System.out.println("Message from " + serverInfo.toString() +
                     " arrived.");
-                System.out.println("Was it encrypted? " + 
-                    messagInfo.getPrivacy());
-                System.out.println("Duplicate Token? " +
-                    messagInfo.isDuplicateToken());
-                System.out.println("Old Token? " + 
-                    messagInfo.isOldToken());
-                System.out.println("Gap Token? " + 
-                    messagInfo.isGapToken());
+                Util.printSubString("Was it encrypted? ", messagInfo.getPrivacy());
+                Util.printSubString("Duplicate Token? ", messagInfo.isDuplicateToken());
+                Util.printSubString("Old Token? ", messagInfo.isOldToken());
+                Util.printSubString("Gap Token? ", messagInfo.isGapToken());
 
                 /* Verify signature block */
                 context.verifyMIC(inToken, 0, inToken.length, buffer, 0, 
                     buffer.length, messagInfo);
-                System.out.println("verified MIC from server");
+                System.out.println("Verified MIC from server");
 
             } else {
                 System.out.println("Error sending message to server...");
@@ -257,5 +266,4 @@ public class gssClient {
                     e.getMessage());
         }
     }
-
 }

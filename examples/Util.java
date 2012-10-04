@@ -226,4 +226,16 @@ public class Util implements gsswrapperConstants{
                 (0xff & data[3])  << 0
                 );
     }
+    
+    public static void printSubString(String first, String second) {
+        System.out.printf(" | %-18s=  %s\n", first, second);
+    }    
+    public static void printSubString(String first, boolean second) {
+        String s = new Boolean(second).toString();
+        printSubString(first, s);
+    }
+    public static void printSubString(String first, int second) {
+        String s = new Integer(second).toString();
+        printSubString(first, s);
+    }
 }
