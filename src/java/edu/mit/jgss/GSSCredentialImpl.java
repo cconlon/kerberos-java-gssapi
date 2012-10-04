@@ -361,10 +361,8 @@ public class GSSCredentialImpl implements GSSCredential {
         
         /* handle null GSSName arg */
         if (desiredName != null) {
-            System.out.println("Setting desired Credential name");
             dName = desiredName.getInternGSSName();
         } else {
-            System.out.println("Using default name, GSS_C_NO_NAME");
             dName = gsswrapper.GSS_C_NO_NAME;
         }
 
@@ -380,7 +378,6 @@ public class GSSCredentialImpl implements GSSCredential {
         if (desiredMechs != null) {
             dMechs = new gss_OID_set_desc();
             for (int i = 0; i < desiredMechs.length; i++) {
-                System.out.println("desiredMechs.length = " + desiredMechs.length);
                 maj_status = gsswrapper.gss_add_oid_set_member(min_status,
                         desiredMechs[i].getNativeOid(), dMechs);
 

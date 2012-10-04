@@ -126,7 +126,7 @@ public class GSSContextImpl implements GSSContext {
      * 
      * credential = GSS_C_NO_CREDENTIAL,
      * channelBinding = GSS_C_NO_CHANNEL_BINDINGS,
-     * srcName = 
+     * srcName = GSS_C_NO_NAME,
      * targetName = ?
      */
     public GSSContextImpl(GSSCredential myCred) throws GSSException {
@@ -134,8 +134,8 @@ public class GSSContextImpl implements GSSContext {
         if (myCred != null) {
 
             credential = (GSSCredentialImpl) myCred;
-            srcName = (GSSNameImpl) credential.getName();
-
+            targetName = (GSSNameImpl) myCred.getName();
+            
         } else {
 
             /* create GSS_C_NO_CREDENTIAL */
@@ -400,6 +400,12 @@ public class GSSContextImpl implements GSSContext {
             context_tmp = internGSSCtx;
         }
 
+        /* if srcName is null, set it up */
+        if (srcName == null) {
+            srcName = new GSSNameImpl();
+            srcName.setInternGSSName(null);
+        }
+
         /* setup output token */
         outputToken.setLength(0);
         outputToken.setValue(null);
@@ -526,9 +532,6 @@ public class GSSContextImpl implements GSSContext {
 
             if (targetName != null)
                 targetName.freeGSSName();
-
-            if (credential != null)
-                credential.freeGSSCredential();
 
             if (delegCredential != null)
                 delegCredential.freeGSSCredential();
