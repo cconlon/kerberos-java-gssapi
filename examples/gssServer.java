@@ -60,6 +60,20 @@ public class gssServer {
     public static void main(String argv[]) throws Exception 
     {
        System.out.println("Starting GSS-API Server Example"); 
+
+        /* set up a shutdown hook to release GSSCredential storage
+           when the user terminates the server with Ctrl+C */
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                try {
+                    cred.dispose();
+                } catch (GSSException e) {
+                    System.out.println("Couldn't free GSSCredential storage");
+                }
+                System.out.println("Freed GSSCredential storage");
+            }
+        });
         
         ServerSocket serverSocket = null;
         Socket clientSocket = null;
