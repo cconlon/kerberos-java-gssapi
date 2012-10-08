@@ -5,17 +5,16 @@ NOTICE: This branch (jgss) is under development and may not build or run
 correctly. Please use the master branch for a stable build and more complete
 documentation.
 
-This package provides a Java wrapper around the the MIT Kerberos GSS-API 
-library conforming to the GSS-API Java bindings via RFC 5653. It also exposes 
-the standard GSS-API functions through a SWIG-generated interface. One of the 
-main goals of this interface is to bring GSS-API functionality to Android, 
-which up to this point has lacked both Kerberos and GSS-API support. Using 
-this interface, Android developers will be able to use GSS-API functionality 
-in their Android NDK applications.
+This package provides a Java GSS-API wrapper around the the MIT Kerberos
+GSS-API native library, conforming to the GSS-API Java bindings via RFC 5653. 
+One of the main goals of this interface is to bring GSS-API functionality to 
+the Android platform, which previous to this project had lacked both Kerberos
+and GSS-API support. Using this interface, Android developers are able to use
+GSS-API functionality in their Android NDK applications.
 
-For a working example of an Android NDK application using the SWIG-generated
-GSS-API interface, please refer to the "Kerberos Android NDK" package on 
-GitHub, here: https://github.com/cconlon/kerberos-android-ndk.
+For a working example of an Android NDK application using this GSS-API 
+interface, please look at the "Kerberos Android NDK" package hosted on 
+GitHub: https://github.com/cconlon/kerberos-android-ndk.
 
 ===========================================================================
 CONTENTS:
@@ -31,15 +30,17 @@ CONTENTS:
 REQUIREMENTS:
 
 You must have SWIG installed on your development machine in order to
-generate this GSS-API wrapper. To download and install SWIG, please see
+build this GSS-API wrapper. The Java GSS-API bindings are wrapped around a
+native SWIG-generated layer that then in turn interfaces to the native 
+Kerberos GSS-API library. To download and install SWIG, please see
 the project homepage at http://www.swig.org/. This project has been developed
-using SWIG version 1.3.40 (Linux).
+using SWIG version 1.3.40 running on Linux.
 
 To use this interface in your Android NDK application, you need to
 include cross-compiled versions of the MIT Kerberos libraries for Android
 in your project. For details about these libraries and an example of how to
 include them in your project, please see the "Kerberos Android NDK" 
-application on GitHub, here: https://github.com/cconlon/kerberos-android-ndk
+application on GitHub: https://github.com/cconlon/kerberos-android-ndk.
 
 If you want to rebuild the pre-built Kerberos libraries, please use the
 android-config.sh shell script found in the above noted project. This will 
@@ -47,18 +48,36 @@ allow the MIT Kerberos libraries to be cross-compiled for the Android
 platform. More detailed instructions can be found in the script comments.
 
 ===========================================================================
-WRAPPER DESIGN:
+PROJECT DESIGN:
+
+This project is made up of several layers, most of which are invisible to
+the end Java API user. The high-level layers are visualized in the following
+figure. The native MIT GSS-API library is wrapped using SWIG into a 
+temporary C/Java layer (LAYER 1). This first layer may be used directly, but
+is more tedious and less standardized than the org.ietf.jgss interface. A 
+top-level Java API is then wrapped around the SWIG-generated layer. This 
+top-level Java API (LAYER 2) conforms to the org.ietf.jgss interface 
+specification, and is located in the edu.mit.jgss package.
+
+            -----> (LAYER 2) Java GSS-API layer (org.ietf.jgss, edu.mit.jgss)
+            |
+    -----> (LAYER 1) SWIG-generated wrapper layer handling C-Java interface
+    |
+Native MIT Kerberos/GSS-API libraries
+
+===========================================================================
+SWIG WRAPPER DESIGN (LAYER 1):
 
 This wrapper contains a few files which are used by SWIG to generate 
-the Java GSS-API interface. A short description of those files along with
-descriptions of some of the key directory structures in this package are
+the Layer 1 Java GSS-API interface. A short description of those files along 
+with descriptions of some of the key directory structures in this package are
 below.
 
 gsswrapper.i
 ------------
 This is the SWIG interface file. It contains all of the code and typemaps 
-needed by SWIG to generate the corresponding Java interface for the MIT 
-GSS-API library. 
+needed by SWIG to generate the corresponding Layer 1 Java interface for the 
+MIT GSS-API library. 
 
 gsswrapper_wrap.h
 -----------------
@@ -70,18 +89,20 @@ should be updated to match accordingly.
 src/java/edu/mit/jgss/swig
 --------------------------
 
-Location of the SWIG-generated .java files which provide Java access to the
-native MIT GSS-API library using a similar interface to GSS-API C bindings.
+Location of the SWIG-generated .java files which provide Layer 1 Java access 
+to the native MIT GSS-API library using a similar interface to GSS-API C 
+bindings.
 
 src/java/edu/mit/jgss
 ---------------------
 
-Location of the MIT implementation of RFC 5653.
+Location of the Layer 2 MIT Java GSS-API implementation of RFC 5653.
 
 src/java/org/ietf/jgss
 ----------------------
 
-Location of the interface files as described by the IETF in RFC 5653.
+Location of the Layer 2 Java GSS-API interface files as described by the 
+IETF in RFC 5653.
 
 ===========================================================================
 BUILDING:
@@ -104,6 +125,10 @@ To build the GSS-API interface and examples on a desktop environment,
     For OS X, you'll also need to change the extension of the shared library
     being compiled by SWIG to .dylib (libgsswrapper.dylib) instead of .so
     which is used by standard Linux environments.
+
+    If building on Linux, the Java include directory may be similar to:
+
+    /usr/lib/jvm/java-6-openjdk/include
 
 (2) Verify that the library being loaded by the SWIG wrapper (gsswrapper.i)
     is the correct one. This should be the name of the library being created
@@ -164,6 +189,12 @@ NOTES:
     The need to use bootclasspath should not be necessary on Android, as
     the platform doesn't have an existing org.ietf.jgss package installed.
 
+(2) The Layer 2 MIT GSS-API Java implementation does not have support for
+    the SPI framework that is specified in RFC 5653. This framework is
+    specified as optional in the RFC. The current edu.mit.jgss package
+    wraps directlly around the Layer 1 SWIG Java GSS-API 
+    package (edu.mit.jgss.swig).
+
 ===========================================================================
 LICENSES:
 
@@ -203,5 +234,5 @@ SUPPORT:
 If you have any questions or comments, please contact
 support@yassl.com or the MIT Kerberos community.
 
-May 23, 2012
+October 8, 2012
 
