@@ -33,6 +33,7 @@
  * Original source developed by yaSSL (http://www.yassl.com)
  *
  * Description: 
+ *
  * A simple server application which uses the MIT Kerberos Java GSS-API. 
  * The following actions are taken by the server:
  *      a) Establish a GSS-API context with the example client.
@@ -41,6 +42,8 @@
  *
  * Before starting the example server, there should be an entry in your
  * system keytab for the service principal.
+ *
+ * This class uses the utility class, GssUtil.java.
  *
  */
 
@@ -120,7 +123,7 @@ public class gssServer {
 
                 while (!context.isEstablished()) {
 
-                    inToken = Util.ReadToken(clientIn);
+                    inToken = GssUtil.ReadToken(clientIn);
                     System.out.println("Received token from client...");
 
                     System.out.println("Calling acceptSecContext");
@@ -128,7 +131,7 @@ public class gssServer {
                             0, inToken.length);
 
                     if (outToken != null && outToken.length > 0) {
-                        err = Util.WriteToken(clientOut, outToken);
+                        err = GssUtil.WriteToken(clientOut, outToken);
                         if (err == 0) {
                             System.out.println("Sent token to client..."); 
                         } else {
@@ -142,18 +145,18 @@ public class gssServer {
                 Oid mechName = context.getMech();
                 System.out.println("Security context established with " +
                         peerName.toString());
-                Util.printSubString("Target Name", targetName.toString());
-                Util.printSubString("Mechanism", mechName.toString());
-                Util.printSubString("AnonymityState", context.getAnonymityState());
-                Util.printSubString("ConfState", context.getConfState());
-                Util.printSubString("CredDelegState", context.getCredDelegState());
-                Util.printSubString("IntegState", context.getIntegState());
-                Util.printSubString("Lifetime", context.getLifetime());
-                Util.printSubString("MutualAuthState", context.getMutualAuthState());
-                Util.printSubString("ReplayDetState", context.getReplayDetState());
-                Util.printSubString("SequenceDetState", context.getSequenceDetState());
-                Util.printSubString("Is initiator?", context.isInitiator());
-                Util.printSubString("Is Prot Ready?", context.isProtReady());
+                GssUtil.printSubString("Target Name", targetName.toString());
+                GssUtil.printSubString("Mechanism", mechName.toString());
+                GssUtil.printSubString("AnonymityState", context.getAnonymityState());
+                GssUtil.printSubString("ConfState", context.getConfState());
+                GssUtil.printSubString("CredDelegState", context.getCredDelegState());
+                GssUtil.printSubString("IntegState", context.getIntegState());
+                GssUtil.printSubString("Lifetime", context.getLifetime());
+                GssUtil.printSubString("MutualAuthState", context.getMutualAuthState());
+                GssUtil.printSubString("ReplayDetState", context.getReplayDetState());
+                GssUtil.printSubString("SequenceDetState", context.getSequenceDetState());
+                GssUtil.printSubString("Is initiator?", context.isInitiator());
+                GssUtil.printSubString("Is Prot Ready?", context.isProtReady());
 
                 /* read message sent by the client */
                 inToken = Util.ReadToken(clientIn);
@@ -167,11 +170,11 @@ public class gssServer {
                 /* print other supplementary per-message status info */
                 System.out.println("Message from " +
                         peerName.toString() + " arrived.");
-                Util.printSubString("Was it encrypted?", supplInfo.getPrivacy());
-                Util.printSubString("Duplicate Token?", supplInfo.isDuplicateToken());
-                Util.printSubString("Old Token?", supplInfo.isOldToken());
-                Util.printSubString("Unsequenced Token?", supplInfo.isUnseqToken());
-                Util.printSubString("Gap Token?", supplInfo.isGapToken());
+                GssUtil.printSubString("Was it encrypted?", supplInfo.getPrivacy());
+                GssUtil.printSubString("Duplicate Token?", supplInfo.isDuplicateToken());
+                GssUtil.printSubString("Old Token?", supplInfo.isOldToken());
+                GssUtil.printSubString("Unsequenced Token?", supplInfo.isUnseqToken());
+                GssUtil.printSubString("Gap Token?", supplInfo.isGapToken());
 
                 supplInfo.setPrivacy(true);     // privacy requested
                 supplInfo.setQOP(0);            // default QOP
@@ -180,7 +183,7 @@ public class gssServer {
                 buffer = context.getMIC(buffer, 0, buffer.length, supplInfo);
 
                 /* send signature block to client */
-                err = Util.WriteToken(clientOut, buffer);
+                err = GssUtil.WriteToken(clientOut, buffer);
                 if (err == 0) {
                     System.out.println("Sent sig block to client...");
                 } else {
