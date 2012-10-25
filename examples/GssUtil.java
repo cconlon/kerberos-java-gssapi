@@ -1,4 +1,4 @@
-/* Util.java - Example GSS-API Utility functions*/
+/* GssUtil.java - Example GSS-API Utility functions*/
 /* 
  * Copyright (C) 2012 by the Massachusetts Institute of Technology.
  * All rights reserved.

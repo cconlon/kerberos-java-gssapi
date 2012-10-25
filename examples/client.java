@@ -65,8 +65,8 @@ public class client implements gsswrapperConstants
         int ret = 0;
         int port = 11115;
         String server = "127.0.0.1";
-        String clientName = "chrisc";
-        String serviceName = "service@ubuntu.local";
+        String clientName = "clientname";
+        String serviceName = "service@host";
         
         /* Customize this if a specific mechanisms should be negotiated, 
            otherwise set neg_mech_set to GSS_C_NO_OID_SET */

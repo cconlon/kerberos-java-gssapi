@@ -54,7 +54,7 @@ class server implements gsswrapperConstants
     public static void main(String argv[]) throws Exception
     {
         int server_port = 11115;
-        String serviceName = "service@ubuntu.local";
+        String serviceName = "service@host";
         int ret = 0;
         int authorizationError = 0;
         long maj_status = 0;

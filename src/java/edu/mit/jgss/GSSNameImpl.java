@@ -48,8 +48,8 @@ public class GSSNameImpl implements GSSName {
     /* internal GSSManager instance */ 
     private GSSManager internGSSManager = GSSManagerImpl.getInstance();
 
-    /* debugging ? */
-    private boolean DEBUG_ERR = true;
+    /* debugging */
+    private boolean DEBUG_ERR = false;
 
     public boolean equals(GSSName another) throws GSSException {
 

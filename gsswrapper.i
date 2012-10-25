@@ -35,7 +35,7 @@
  *
  * This file is used by SWIG to generate the Java GSS-API SWIG wrapper,
  * used to create the edu.mit.jgss.swig package, subsequently used in the
- * MIT implementatio of RFC 5653 (package edu.mit.jgss).
+ * MIT implementation of RFC 5653 (package edu.mit.jgss).
  *
  */
 
@@ -81,7 +81,7 @@
     } gss_name_t_desc;
 
     /* 
-     * Hand-rolled JNI function for retreival of gss_buffer_t 
+     * Hand-rolled JNI function for retrieval of gss_buffer_t 
      * value by Java. Requires gss_buffer_desc as input.
      */
     JNIEXPORT jbyteArray JNICALL 
