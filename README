@@ -1,10 +1,6 @@
 
 MIT Kerberos GSS-API Java Interface
 
-NOTICE: This branch (jgss) is under development and may not build or run 
-correctly. Please use the master branch for a stable build and more complete
-documentation.
-
 This package provides a Java GSS-API wrapper around the the MIT Kerberos
 GSS-API native library. This wrapper conforms to the GSS-API Java bindings 
 via RFC 5653. One of the main goals of this project is to bring GSS-API 
