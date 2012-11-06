@@ -37,7 +37,7 @@
  * A simple client application which uses the MIT Kerberos Java GSS-API.
  * The following actions are taken by the client:
  *      a) Establish a GSSAPI context with the example server.
- *      b) Sign and encrypt, and send a message to the server.
+ *      b) Sign, encrypt, and send a message to the server.
  *      c) Verify the signature block returned by the server.
  *
  * Before running the client example, the client principal credentials must

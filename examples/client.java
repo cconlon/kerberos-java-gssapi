@@ -37,9 +37,9 @@
  * A simple client application which uses the MIT Kerberos Java GSS-API 
  * SWIG wrapper. The following actions are taken by the client:
  *      a) Establish a GSSAPI context with the example server
- *      b) Signs and encrypts, and sends a message to the server using
+ *      b) Sign, encrypt, and send a message to the server using
  *         gss_wrap.
- *      c) Verifies the signature block returned by the server with
+ *      c) Verify the signature block returned by the server with
  *         gss_verify_mic.
  *      d) Repeat steps b) and c) but using gss_seal / gss_verify
  *      e) Perform misc. GSSAPI function tests

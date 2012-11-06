@@ -37,8 +37,8 @@
  * A simple server application which uses the MIT Kerberos Java GSS-API. 
  * The following actions are taken by the server:
  *      a) Establish a GSS-API context with the example client.
- *      b) Unwraps a signed and encrypted message that the client sends.
- *      c) Generates and sends a signature block for the received message.
+ *      b) Unwrap a signed and encrypted message that the client sends.
+ *      c) Generate and send a signature block for the received message.
  *
  * Before starting the example server, there should be an entry in your
  * system keytab for the service principal.
