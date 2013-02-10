@@ -351,8 +351,8 @@ typedef unsigned int uint32_t;  /* for SWIG convienence */
     $1 = NULL;
     if ($input != NULL) {
         /* Get our Java byte array as a char * */
-        jboolean isCopy;
-        const char* nativeArray = (char*) (*jenv)->GetByteArrayElements(jenv, $input, &isCopy);
+        const char* nativeArray = 
+            (char*) (*jenv)->GetByteArrayElements(jenv, $input, NULL);
 
         /* Get the length of our byte array */
         $2 = (*jenv)->GetArrayLength(jenv, $input);
@@ -362,9 +362,7 @@ typedef unsigned int uint32_t;  /* for SWIG convienence */
         strcpy($1, nativeArray);
 
         /* Release the Java byte[] */
-        if (isCopy) {
-            (*jenv)->ReleaseByteArrayElements(jenv, $input, nativeArray, JNI_ABORT);
-        }
+        (*jenv)->ReleaseByteArrayElements(jenv, $input, nativeArray, JNI_ABORT);
     }
 }
 %typemap(jni) (char * BYTE, int LENGTH) "jbyteArray"
