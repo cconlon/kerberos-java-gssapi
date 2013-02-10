@@ -1491,6 +1491,10 @@ gss_inquire_mech_for_saslname(
 struct extensions
 ===========================================================================
 */
+
+/* Release the char * after constructing a Java String */
+%newobject gss_buffer_desc::toString();
+
 %extend gss_buffer_desc {
     gss_buffer_desc() {
         return (gss_buffer_desc *) calloc(1,sizeof(gss_buffer_desc));
@@ -1523,6 +1527,10 @@ struct extensions
         }
     }
 }
+
+/* Release the char * after constructing a Java String */
+%newobject gss_OID_desc::toString();
+%newobject gss_OID_desc::toDotString();
 
 %extend gss_OID_desc {
     gss_OID_desc() {
@@ -1584,26 +1592,30 @@ struct extensions
      * "{ 1 2 ... 233 }"
      */
     char * toString() {
-        OM_uint32 maj_status, min_status, msg_ctx;
-        gss_buffer_t oidString;
-        gss_buffer_desc msg;
+        OM_uint32 maj_status, min_status;
+        gss_buffer_desc oidBuf;
 
         maj_status = 0;
         min_status = 0;
-        msg_ctx = 0;
-
-        oidString = malloc(sizeof(gss_buffer_t));
 
         if ($self) {
             /* Convert OID into string representation */
-            maj_status = gss_oid_to_str(&min_status, $self, oidString);
-
-            if (maj_status == GSS_S_COMPLETE) {
-                return ((char *) oidString->value);
-            } else {
-                maj_status = gss_release_buffer(&min_status, oidString);
+            maj_status = gss_oid_to_str(&min_status, $self, &oidBuf);
+            if (maj_status != GSS_S_COMPLETE) {
                 return NULL;
             }
+
+            /*
+             * Allocate a buffer and copy the oid to it. This buffer
+             * will be freed automatically by the intermediate JNI layers.
+             */
+            char *ret = (char *)malloc(oidBuf.length);
+            memcpy(ret, oidBuf.value, oidBuf.length);
+
+            /* Release the gss_buffer_desc */
+            gss_release_buffer(&min_status, &oidBuf);
+
+            return ret;
         } else {
             return NULL;
         }
@@ -1614,9 +1626,8 @@ struct extensions
      * "1.2. ... .233"
      */
     char * toDotString() {
-        OM_uint32 maj_status, min_status, msg_ctx;
-        gss_buffer_t oidString;
-        gss_buffer_desc msg;
+        OM_uint32 maj_status, min_status;
+        gss_buffer_desc oidBuf;
         char *newString;
         int elements = 0;
         int i = 0;
@@ -1624,24 +1635,19 @@ struct extensions
 
         maj_status = 0;
         min_status = 0;
-        msg_ctx = 0;
-
-        oidString = malloc(sizeof(gss_buffer_t));
 
         if ($self) {
 
             /* convert OID into native string representation "{1 2 ... 2}" */
-            maj_status = gss_oid_to_str(&min_status, $self, oidString);
-
+            maj_status = gss_oid_to_str(&min_status, $self, &oidBuf);
             if (maj_status != GSS_S_COMPLETE) {
-                maj_status = gss_release_buffer(&min_status, oidString);
                 return NULL;
             }
 
             /* determine correct length of new string */
-            for (i = 0; ((char*)oidString->value)[i] != '\0'; i++) {
-                if (((char*)oidString->value)[i] != '{' &&
-                    ((char*)oidString->value)[i] != '}') {
+            for (i = 0; ((char*)oidBuf.value)[i] != '\0'; i++) {
+                if (((char*)oidBuf.value)[i] != '{' &&
+                    ((char*)oidBuf.value)[i] != '}') {
                     elements++;
                 }
             }
@@ -1649,20 +1655,23 @@ struct extensions
             newString = malloc(elements + 1);
 
             /* create new dot-separated string */
-            for (i = 0; ((char*)oidString->value)[i] != '\0'; i++) {
-                if (((char*)oidString->value)[i] != ' ' &&
-                    ((char*)oidString->value)[i] != '{' &&
-                    ((char*)oidString->value)[i] != '}') {
-                    newString[j] = ((char*)oidString->value)[i];
+            for (i = 0; ((char*)oidBuf.value)[i] != '\0'; i++) {
+                if (((char*)oidBuf.value)[i] != ' ' &&
+                    ((char*)oidBuf.value)[i] != '{' &&
+                    ((char*)oidBuf.value)[i] != '}') {
+                    newString[j] = ((char*)oidBuf.value)[i];
                     j++;
-                } else if (((char*)oidString->value)[i] == ' ' &&
-                           ((char*)oidString->value)[i-1] != '{' &&
-                           ((char*)oidString->value)[i+1] != '}') {
+                } else if (((char*)oidBuf.value)[i] == ' ' &&
+                           ((char*)oidBuf.value)[i-1] != '{' &&
+                           ((char*)oidBuf.value)[i+1] != '}') {
                     newString[j] = '.';
                     j++;
                 }
             }
             newString[j] = '\0';
+
+            /* Release the buffer */
+            gss_release_buffer(&min_status, &oidBuf);
             return newString;
 
         } else {
