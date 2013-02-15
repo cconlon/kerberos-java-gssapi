@@ -103,7 +103,7 @@ public class GSSContextImpl implements GSSContext {
             /* default native mech = gss_mech_krb5 */
             this.mech = new OidImpl("1.2.840.113554.1.2.2");
         } else {
-            this.mech = (OidImpl) mech;
+            this.mech = new OidImpl(mech.toString());
         }
 
         if (myCred != null) {
