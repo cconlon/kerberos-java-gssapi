@@ -109,6 +109,10 @@ public class GSSContextImpl implements GSSContext {
         if (myCred != null) {
             this.credential = (GSSCredentialImpl) myCred;
             this.srcName = (GSSNameImpl) myCred.getName();
+        } else {
+            /* create GSS_C_NO_CREDENTIAL */
+            this.credential =  new GSSCredentialImpl();
+            this.credential.setInternGSSCred(null);
         }
 
         if (lifetime >= 0) {
