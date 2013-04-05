@@ -349,6 +349,7 @@ typedef unsigned int uint32_t;  /* for SWIG convienence */
 %apply (char * BYTE, int LENGTH) { (char * byteArray, long len) };*/
 %typemap(in) (char * BYTE, int LENGTH) {
     $1 = NULL;
+    $2 = NULL;
     if ($input != NULL) {
         /* Get our Java byte array as a char * */
         const char* nativeArray = 
@@ -1510,11 +1511,11 @@ struct extensions
      */
     char * toString() {
         OM_uint32 maj_status, min_status, msg_ctx;
+        char* outputStr;
         maj_status = 0;
         min_status = 0;
         msg_ctx = 0;
         
-        char* outputStr;
 
         if ($self) {
             outputStr = malloc($self->length);
@@ -1553,8 +1554,6 @@ struct extensions
 
     gss_OID_desc(char * byteArray, long len) {
         gss_OID_desc *newoid;
-        OM_uint32 maj_status, min_status;
-        int i;
 
         newoid = (gss_OID_desc *) calloc (1, sizeof(gss_OID_desc));
         newoid->length = len;
@@ -1592,6 +1591,7 @@ struct extensions
     char * toString() {
         OM_uint32 maj_status, min_status;
         gss_buffer_desc oidBuf;
+        char* ret;
 
         maj_status = 0;
         min_status = 0;
@@ -1607,7 +1607,7 @@ struct extensions
              * Allocate a buffer and copy the oid to it. This buffer
              * will be freed automatically by the intermediate JNI layers.
              */
-            char *ret = (char *)malloc(oidBuf.length);
+            ret = (char *)malloc(oidBuf.length);
             memcpy(ret, oidBuf.value, oidBuf.length);
 
             /* Release the gss_buffer_desc */
