@@ -29,7 +29,6 @@
  */
 package edu.mit.jgss;
 
-import java.io.InputStream;
 import java.net.InetAddress;
 import org.ietf.jgss.ChannelBinding;
 import org.ietf.jgss.GSSException;

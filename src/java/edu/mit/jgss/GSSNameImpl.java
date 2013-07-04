@@ -37,7 +37,6 @@ import org.ietf.jgss.Oid;
 import edu.mit.jgss.swig.gss_name_t_desc;
 import edu.mit.jgss.swig.gss_buffer_desc;
 import edu.mit.jgss.swig.gss_OID_desc;
-import edu.mit.jgss.swig.gss_OID_set_desc;
 import edu.mit.jgss.swig.gsswrapper;
 
 public class GSSNameImpl implements GSSName {
@@ -45,9 +44,6 @@ public class GSSNameImpl implements GSSName {
     /* Representing our underlying SWIG-wrapped gss_name_t_desc object */
     private gss_name_t_desc internGSSName;
    
-    /* internal GSSManager instance */ 
-    private GSSManager internGSSManager = GSSManagerImpl.getInstance();
-
     /* debugging */
     private boolean DEBUG_ERR = false;
 
@@ -142,7 +138,6 @@ public class GSSNameImpl implements GSSName {
     public byte[] export() throws GSSException {
         long maj_status = 0;
         long[] min_status = {0};
-        int ret = 0;
 
         gss_buffer_desc exportName = new gss_buffer_desc();
         maj_status = gsswrapper.gss_export_name(min_status,

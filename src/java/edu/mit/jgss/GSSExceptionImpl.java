@@ -33,6 +33,8 @@ import org.ietf.jgss.GSSException;
 
 public class GSSExceptionImpl extends GSSException {
 
+    private static final long serialVersionUID = 5343836624172927333L;
+
     /* set the minor and major codes, internal gss_display_name
        will handle setting the error strings */ 
     public GSSExceptionImpl(int majorCode, int minorCode) {

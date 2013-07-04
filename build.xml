@@ -30,7 +30,7 @@
       <mkdir dir="${test.build.dir}"/>
     </target>
 
-    <target name="clean">
+    <target name="clean" depends="cleanswig">
       <delete dir="${test.build.dir}"/>
       <delete dir="${build.dir}"/>
       <delete dir="${lib.dir}"/>
@@ -38,6 +38,34 @@
       <delete>
         <fileset dir="." includes="TEST-*" />
       </delete>
+    </target>
+    
+    <target name="swig">
+        <mkdir dir="${swiggen.dir}" />
+
+        <exec
+            executable="swig"
+            failonerror="true" >
+            
+            <arg value="-java" />
+
+            <arg value="-package" />
+
+            <arg value="edu.mit.jgss.swig" />
+
+            <arg value="-outdir" />
+
+            <arg value="${swiggen.dir}" />
+
+            <arg value="-o" />
+
+            <arg value="./native/gsswrapper_wrap.c" />
+
+            <arg value="./gsswrapper.i" />
+        </exec>
+        
+        <echo message="Wrapper generated."/>
+
     </target>
 
     <target name="cleanswig">
@@ -47,7 +75,7 @@
       </delete>
     </target>
 
-    <target name="build" depends="init, compile, jar, examples, test"/>
+    <target name="build" depends="init, swig, compile, jar, examples, test"/>
 
     <target name="compile">
       <javac

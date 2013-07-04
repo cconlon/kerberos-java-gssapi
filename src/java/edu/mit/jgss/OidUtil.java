@@ -62,7 +62,6 @@ public class OidUtil {
         
         int tag;
         int length;
-        byte[] tmpOid;
         ByteArrayOutputStream outOid = new ByteArrayOutputStream();
 
         try {

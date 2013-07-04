@@ -29,7 +29,6 @@
  */
 package org.ietf.jgss;
 
-import java.util.regex.*;
 import java.util.Arrays;
 import java.io.*;
 

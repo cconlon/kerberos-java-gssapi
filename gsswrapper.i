@@ -1495,11 +1495,11 @@ struct extensions
 %newobject gss_buffer_desc::toString();
 
 %extend gss_buffer_desc {
-    gss_buffer_desc() {
+    gss_buffer_desc_struct() {
         return (gss_buffer_desc *) calloc(1,sizeof(gss_buffer_desc));
     }
 
-    gss_buffer_desc(void *value) {
+    gss_buffer_desc_struct(void *value) {
         gss_buffer_desc *gs;
         gs = (gss_buffer_desc *) malloc (sizeof(gss_buffer_desc));
         gs->value = value;
@@ -1532,12 +1532,12 @@ struct extensions
 %newobject gss_OID_desc::toDotString();
 
 %extend gss_OID_desc {
-    gss_OID_desc() {
+    gss_OID_desc_struct() {
        gss_OID_desc *ret = (gss_OID_desc *) calloc(1, sizeof(gss_OID_desc));
        return ret;
     }
 
-    gss_OID_desc(void *value) {
+    gss_OID_desc_struct(void *value) {
         gss_OID_desc *newoid;
         gss_buffer_desc input_string;
         OM_uint32 maj_status, min_status;
@@ -1552,7 +1552,7 @@ struct extensions
         return newoid;
     }
 
-    gss_OID_desc(char * byteArray, long len) {
+    gss_OID_desc_struct(char * byteArray, long len) {
         gss_OID_desc *newoid;
 
         newoid = (gss_OID_desc *) calloc (1, sizeof(gss_OID_desc));
@@ -1680,13 +1680,13 @@ struct extensions
     /* keep the java virtual machine from freeing gss_OID_desc memory.
        If this isn't here, we get often get a segfault when running
        client applications when Java tries to free memory it shouldn't. */
-    ~gss_OID_desc() {
+    ~gss_OID_desc_struct() {
         gss_OID_desc *oid = $self;
     }
 }
 
 %extend gss_OID_set_desc {
-    gss_OID_set_desc() {
+    gss_OID_set_desc_struct() {
         return (gss_OID_set_desc *) calloc(1, sizeof(gss_OID_set_desc));
     }
 

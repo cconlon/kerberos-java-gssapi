@@ -33,6 +33,8 @@ import edu.mit.jgss.swig.*;
 
 public class GSSException extends Exception {
 
+    private static final long serialVersionUID = -5142354087553823574L;
+
     public static final int BAD_BINDINGS = 1;
     public static final int BAD_MECH = 2;
     public static final int BAD_NAME = 3;
