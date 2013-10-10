@@ -87,7 +87,10 @@ SWIGEXPORT void JNICALL Java_edu_mit_jgss_swig_gsswrapperJNI_gss_1OID_1desc_1ele
 SWIGEXPORT jobject JNICALL Java_edu_mit_jgss_swig_gsswrapperJNI_gss_1OID_1desc_1elements_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_);
 SWIGEXPORT jlong JNICALL Java_edu_mit_jgss_swig_gsswrapperJNI_new_1gss_1OID_1desc_1_1SWIG_10(JNIEnv *jenv, jclass jcls);
 SWIGEXPORT jlong JNICALL Java_edu_mit_jgss_swig_gsswrapperJNI_new_1gss_1OID_1desc_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jobject jarg1);
+SWIGEXPORT jlong JNICALL Java_edu_mit_jgss_swig_gsswrapperJNI_new_1gss_1OID_1desc_1_1SWIG_12(JNIEnv *jenv, jclass jcls, jbyteArray jarg1);
 SWIGEXPORT jint JNICALL Java_edu_mit_jgss_swig_gsswrapperJNI_gss_1OID_1desc_1equals(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2);
+SWIGEXPORT jstring JNICALL Java_edu_mit_jgss_swig_gsswrapperJNI_gss_1OID_1desc_1toString(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_);
+SWIGEXPORT jstring JNICALL Java_edu_mit_jgss_swig_gsswrapperJNI_gss_1OID_1desc_1toDotString(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_);
 SWIGEXPORT void JNICALL Java_edu_mit_jgss_swig_gsswrapperJNI_delete_1gss_1OID_1desc(JNIEnv *jenv, jclass jcls, jlong jarg1);
 SWIGEXPORT void JNICALL Java_edu_mit_jgss_swig_gsswrapperJNI_gss_1OID_1set_1desc_1count_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2);
 SWIGEXPORT jlong JNICALL Java_edu_mit_jgss_swig_gsswrapperJNI_gss_1OID_1set_1desc_1count_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_);
@@ -102,6 +105,7 @@ SWIGEXPORT void JNICALL Java_edu_mit_jgss_swig_gsswrapperJNI_gss_1buffer_1desc_1
 SWIGEXPORT jobject JNICALL Java_edu_mit_jgss_swig_gsswrapperJNI_gss_1buffer_1desc_1value_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_);
 SWIGEXPORT jlong JNICALL Java_edu_mit_jgss_swig_gsswrapperJNI_new_1gss_1buffer_1desc_1_1SWIG_10(JNIEnv *jenv, jclass jcls);
 SWIGEXPORT jlong JNICALL Java_edu_mit_jgss_swig_gsswrapperJNI_new_1gss_1buffer_1desc_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jobject jarg1);
+SWIGEXPORT jstring JNICALL Java_edu_mit_jgss_swig_gsswrapperJNI_gss_1buffer_1desc_1toString(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_);
 SWIGEXPORT void JNICALL Java_edu_mit_jgss_swig_gsswrapperJNI_delete_1gss_1buffer_1desc(JNIEnv *jenv, jclass jcls, jlong jarg1);
 SWIGEXPORT void JNICALL Java_edu_mit_jgss_swig_gsswrapperJNI_gss_1channel_1bindings_1struct_1initiator_1addrtype_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2);
 SWIGEXPORT jlong JNICALL Java_edu_mit_jgss_swig_gsswrapperJNI_gss_1channel_1bindings_1struct_1initiator_1addrtype_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_);
