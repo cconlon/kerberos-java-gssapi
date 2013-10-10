@@ -349,7 +349,7 @@ typedef unsigned int uint32_t;  /* for SWIG convienence */
 %apply (char * BYTE, int LENGTH) { (char * byteArray, long len) };*/
 %typemap(in) (char * BYTE, int LENGTH) {
     $1 = NULL;
-    $2 = NULL;
+    $2 = 0;
     if ($input != NULL) {
         /* Get our Java byte array as a char * */
         const char* nativeArray = 
@@ -363,7 +363,7 @@ typedef unsigned int uint32_t;  /* for SWIG convienence */
         strcpy($1, nativeArray);
 
         /* Release the Java byte[] */
-        (*jenv)->ReleaseByteArrayElements(jenv, $input, nativeArray, JNI_ABORT);
+        (*jenv)->ReleaseByteArrayElements(jenv, $input, (jbyte*)nativeArray, JNI_ABORT);
     }
 }
 %typemap(jni) (char * BYTE, int LENGTH) "jbyteArray"
