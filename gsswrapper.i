@@ -1494,7 +1494,7 @@ struct extensions
 /* Release the char * after constructing a Java String */
 %newobject gss_buffer_desc::toString();
 
-%extend gss_buffer_desc {
+%extend gss_buffer_desc_struct {
     gss_buffer_desc_struct() {
         return (gss_buffer_desc *) calloc(1,sizeof(gss_buffer_desc));
     }
@@ -1531,7 +1531,7 @@ struct extensions
 %newobject gss_OID_desc::toString();
 %newobject gss_OID_desc::toDotString();
 
-%extend gss_OID_desc {
+%extend gss_OID_desc_struct {
     gss_OID_desc_struct() {
        gss_OID_desc *ret = (gss_OID_desc *) calloc(1, sizeof(gss_OID_desc));
        return ret;
@@ -1685,7 +1685,7 @@ struct extensions
     }
 }
 
-%extend gss_OID_set_desc {
+%extend gss_OID_set_desc_struct {
     gss_OID_set_desc_struct() {
         return (gss_OID_set_desc *) calloc(1, sizeof(gss_OID_set_desc));
     }
