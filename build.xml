@@ -30,7 +30,7 @@
       <mkdir dir="${test.build.dir}"/>
     </target>
 
-    <target name="clean" depends="cleanswig">
+    <target name="clean">
       <delete dir="${test.build.dir}"/>
       <delete dir="${build.dir}"/>
       <delete dir="${lib.dir}"/>
