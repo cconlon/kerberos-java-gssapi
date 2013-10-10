@@ -46,7 +46,7 @@ build this GSS-API wrapper. The Java GSS-API bindings are wrapped around a
 native SWIG-generated layer that then in turn interfaces to the native 
 Kerberos GSS-API library. To download and install SWIG, please see
 the project homepage at http://www.swig.org/. This project has been developed
-using SWIG version 1.3.40 running on Linux.
+using SWIG version 2.0.11 running on Linux.
 
 To use this interface in your Android NDK application, you need to
 include cross-compiled versions of the MIT Kerberos libraries for Android
@@ -332,6 +332,17 @@ started, it will do several things, including:
 (2) Sign, encrypt, and send a message to the server.
 (3) Verify the signature block returned by the server.
 
+The gssClient example has several command line options. To see a list of
+available options, run:
+
+./examples/gssClient.sh -?
+
+GSS-API example client usage:
+-?      Help, print this usage
+-h <host>   Host to connect to, default 127.0.0.1
+-p <port>   Port to connect on, default 11115
+-s <str>    Service name to connect to, default 'service@host'
+-c <str>    Client principal name, default 'clientname
 
 4.4 Server (examples/gssServer.java)
 ------------------------------------
@@ -353,6 +364,16 @@ do several things, including:
 (1) Establish a GSS-API context with the example client.
 (2) Unwrap a signed and encrypted message that the client sends.
 (3) Generate and send a signature block for the received message.
+
+The gssServer example has several command line options. To see a list of
+available options, run:
+
+./examples/gssServer.sh -?
+
+GSS-API example server usage:
+-?      Help, print this usage
+-p <port>   Port to listen on, default 11115
+-s <str>    Service name, default 'service@host'
 
 Before starting the example server, there should be an entry in your
 system keytab for the server service principal.
@@ -648,5 +669,5 @@ MIT Kerberos Libraries: ---------------------------------------------------
 
 If you have any questions or comments, please post to the krbdev mailing
 list (http://web.mit.edu/kerberos/mail-lists.html) or contact
-support@yassl.com.
+support@wolfssl.com.
 

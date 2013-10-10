@@ -16,7 +16,7 @@
 #        2) The shared library extension should be .dylib (libgsswrapper.dylib)
 #           instead of .so.
 #
-# Original source developed by yaSSL (http://www.yassl.com)
+# Original source developed by wolfSSL (http://www.wolfssl.com)
 # 
 
 # Generate the SWIG GSS-API interface

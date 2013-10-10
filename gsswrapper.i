@@ -31,7 +31,7 @@
  */
 
 /*
- * Original source developed by yaSSL (http://www.yassl.com)
+ * Original source developed by wolfSSL (http://www.wolfssl.com)
  *
  * This file is used by SWIG to generate the Java GSS-API SWIG wrapper,
  * used to create the edu.mit.jgss.swig package, subsequently used in the

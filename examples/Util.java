@@ -30,7 +30,7 @@
  */
 
 /*
- * Original source developed by yaSSL (http://www.yassl.com)
+ * Original source developed by wolfSSL (http://www.wolfssl.com)
  *
  * Description:
  * Java MIT Kerberos GSS-API interface utility functions.
