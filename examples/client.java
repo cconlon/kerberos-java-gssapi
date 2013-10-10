@@ -51,10 +51,23 @@ import edu.mit.jgss.swig.*;
 
 public class client implements gsswrapperConstants
 {
-    /* Global GSS-API context */
-    public static gss_ctx_id_t_desc context = new gss_ctx_id_t_desc();
+    private static int port = 11115;
+    private static String server = "127.0.0.1";
+    private static String clientName = "clientname";
+    private static String serviceName = "service@host";
 
-    public static void main(String argv[]) throws Exception
+    /* Global GSS-API context */
+    private static gss_ctx_id_t_desc context = new gss_ctx_id_t_desc();
+
+    public static void main(String args[]) {
+        try {
+            new client().run(args);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void run(String args[]) throws Exception
     {
         /* Return/OUTPUT variables */
         long maj_status = 0;
@@ -63,10 +76,34 @@ public class client implements gsswrapperConstants
         long[] time_rec = {0};
    
         int ret = 0;
-        int port = 11115;
-        String server = "127.0.0.1";
-        String clientName = "clientname";
-        String serviceName = "service@host";
+        
+        /* pull in command line options from user */
+        for (int i = 0; i < args.length; i++)
+        {
+            String arg = args[i];
+
+            if (arg.equals("-?")) {
+                printUsage();
+            } else if (arg.equals("-h")) {
+                if (args.length < i+2)
+                    printUsage();
+                server = args[++i];
+            } else if (arg.equals("-p")) {
+                if (args.length < i+2)
+                    printUsage();
+                port = Integer.parseInt(args[++i]);
+            } else if (arg.equals("-s")) {
+                if (args.length < i+2)
+                    printUsage();
+                serviceName = args[++i];
+            } else if (arg.equals("-c")) {
+                if (args.length < i+2)
+                    printUsage();
+                clientName = args[++i];
+            } else {
+                printUsage();
+            }
+        }
         
         /* Customize this if a specific mechanisms should be negotiated, 
            otherwise set neg_mech_set to GSS_C_NO_OID_SET */
@@ -175,7 +212,7 @@ public class client implements gsswrapperConstants
         clientSocket.close();
     }
 
-    public static int Authenticate(Socket clientSocket,
+    public int Authenticate(Socket clientSocket,
             InputStream serverIn, OutputStream serverOut,
             String inClientName, String inServiceName,
             gss_OID_set_desc neg_mech_set) 
@@ -422,7 +459,7 @@ public class client implements gsswrapperConstants
 
     } /* end Authenticate() */
 
-    public static int Communicate(Socket clientSocket,
+    public int Communicate(Socket clientSocket,
             InputStream serverIn, OutputStream serverOut)
     {
         long maj_status = 0;
@@ -486,7 +523,7 @@ public class client implements gsswrapperConstants
 
     } /* end Communicate() */
     
-    public static int AltCommunicate(Socket clientSocket, 
+    public int AltCommunicate(Socket clientSocket, 
             InputStream serverIn, OutputStream serverOut)
     {
         long maj_status = 0;
@@ -572,7 +609,7 @@ public class client implements gsswrapperConstants
 
     } /* end AltCommunicate() */
 
-    public static int PrintContextInfo() 
+    public int PrintContextInfo() 
     {
         long maj_status = 0;
         long[] min_status = {0};
@@ -794,7 +831,7 @@ public class client implements gsswrapperConstants
         return 0;
     }
     
-    public static int MiscFunctionTests() 
+    public int MiscFunctionTests() 
     {
         long maj_status = 0;
         long[] min_status = {0};
@@ -861,6 +898,16 @@ public class client implements gsswrapperConstants
         System.out.println("-------------------------------------------------");
 
         return 0;
+    }
+    
+    public void printUsage() {
+        System.out.println("SWIG Kerberos example client usage:");
+        System.out.println("-?\t\tHelp, print this usage");
+        System.out.println("-h <host>\tHost to connect to, default 127.0.0.1");
+        System.out.println("-p <port>\tPort to connect on, default 11115");
+        System.out.println("-s <str>\tService name to connect to, default 'service@host'");
+        System.out.println("-c <str>\tClient principal name, default 'clientname");
+        System.exit(1);
     }
 }
 

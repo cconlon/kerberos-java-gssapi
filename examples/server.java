@@ -49,12 +49,20 @@ import edu.mit.jgss.swig.*;
 
 class server implements gsswrapperConstants
 {
-    public static gss_ctx_id_t_desc context = new gss_ctx_id_t_desc();
+    private static int server_port = 11115;
+    private static String serviceName = "service@host";
+    private static gss_ctx_id_t_desc context = new gss_ctx_id_t_desc();
 
-    public static void main(String argv[]) throws Exception
+    public static void main(String args[]) {
+        try {
+            new server().run(args);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void run(String args[]) throws Exception
     {
-        int server_port = 11115;
-        String serviceName = "service@host";
         int ret = 0;
         int authorizationError = 0;
         long maj_status = 0;
@@ -62,6 +70,26 @@ class server implements gsswrapperConstants
         String clientMsg;
         gss_ctx_id_t_desc gssContext =  GSS_C_NO_CONTEXT;
         gss_cred_id_t_desc serverCreds = new gss_cred_id_t_desc();
+
+        /* pull in command line options from user */
+        for (int i = 0; i < args.length; i++)
+        {
+            String arg = args[i];
+
+            if (arg.equals("-?")) {
+                printUsage();
+            } else if (arg.equals("-p")) {
+                if (args.length < i+2)
+                    printUsage();
+                server_port = Integer.parseInt(args[++i]);
+            } else if (arg.equals("-s")) {
+                if (args.length < i+2)
+                    printUsage();
+                serviceName = args[++i];
+            } else {
+                printUsage();
+            }
+        }
 
         /* create input and output streams */
         ServerSocket serverSocket = null;
@@ -158,7 +186,7 @@ class server implements gsswrapperConstants
         }
     }
 
-    public static gss_cred_id_t_desc AcquireServerCreds(String serviceName)
+    public gss_cred_id_t_desc AcquireServerCreds(String serviceName)
     {
         gss_cred_id_t_desc server_creds = new gss_cred_id_t_desc();
         gss_buffer_desc name_buf = new gss_buffer_desc(serviceName);
@@ -192,7 +220,7 @@ class server implements gsswrapperConstants
         return server_creds;            
     }
 
-    public static int Authenticate(Socket inSocket,
+    public int Authenticate(Socket inSocket,
             InputStream clientIn, 
             OutputStream clientOut)
     {
@@ -303,7 +331,7 @@ class server implements gsswrapperConstants
 
     } /* end Authorize() */
 
-    public static int Communicate(Socket inSocket,
+    public int Communicate(Socket inSocket,
             InputStream clientIn, 
             OutputStream clientOut)
     {
@@ -369,7 +397,7 @@ class server implements gsswrapperConstants
 
     } /* end Communicate() */
     
-    public static int AltCommunicate(Socket inSocket,
+    public int AltCommunicate(Socket inSocket,
             InputStream clientIn, 
             OutputStream clientOut)
     {
@@ -433,5 +461,13 @@ class server implements gsswrapperConstants
         return 0;
 
     } /* end AltCommunicate() */
+    
+    public void printUsage() {
+        System.out.println("SWIG Kerberos example server usage:");
+        System.out.println("-?\t\tHelp, print this usage");
+        System.out.println("-p <port>\tPort to listen on, default 11115");
+        System.out.println("-s <str>\tService name, default 'service@host'");
+        System.exit(1);
+    }
 }
 
