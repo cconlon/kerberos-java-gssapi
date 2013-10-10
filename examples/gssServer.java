@@ -60,9 +60,37 @@ public class gssServer {
     private static GSSCredential cred   = null;
     private static GSSManager mgr = GSSManager.getInstance();
 
-    public static void main(String argv[]) throws Exception 
+    public static void main(String args[]) {
+        try {
+            new gssServer().run(args);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void run(String args[]) throws Exception 
     {
-       System.out.println("Starting GSS-API Server Example"); 
+        /* pull in command line options from user */
+        for (int i = 0; i < args.length; i++)
+        {
+            String arg = args[i];
+
+            if (arg.equals("-?")) {
+                printUsage();
+            } else if (arg.equals("-p")) {
+                if (args.length < i+2)
+                    printUsage();
+                server_port = Integer.parseInt(args[++i]);
+            } else if (arg.equals("-s")) {
+                if (args.length < i+2)
+                    printUsage();
+                serviceName = args[++i];
+            } else {
+                printUsage();
+            }
+        }
+        
+        System.out.println("Starting GSS-API Server Example"); 
 
         /* set up a shutdown hook to release GSSCredential storage
            when the user terminates the server with Ctrl+C */
@@ -202,5 +230,13 @@ public class gssServer {
             clientIn.close();
             clientSocket.close();
         }
+    }
+    
+    public void printUsage() {
+        System.out.println("GSS-API example server usage:");
+        System.out.println("-?\t\tHelp, print this usage");
+        System.out.println("-p <port>\tPort to listen on, default 11115");
+        System.out.println("-s <str>\tService name, default 'service@host'");
+        System.exit(1);
     }
 }

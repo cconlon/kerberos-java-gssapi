@@ -70,7 +70,43 @@ public class gssClient {
     private static OutputStream serverOut   = null;
     private static InputStream serverIn     = null;
 
-    public static void main(String argv[]) throws Exception  {
+    public static void main(String args[]) {
+        try {
+            new gssClient().run(args);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void run(String args[]) throws Exception  {
+
+        /* pull in command line options from user */
+        for (int i = 0; i < args.length; i++)
+        {
+            String arg = args[i];
+
+            if (arg.equals("-?")) {
+                printUsage();
+            } else if (arg.equals("-h")) {
+                if (args.length < i+2)
+                    printUsage();
+                server = args[++i];
+            } else if (arg.equals("-p")) {
+                if (args.length < i+2)
+                    printUsage();
+                port = Integer.parseInt(args[++i]);
+            } else if (arg.equals("-s")) {
+                if (args.length < i+2)
+                    printUsage();
+                serviceName = args[++i];
+            } else if (arg.equals("-c")) {
+                if (args.length < i+2)
+                    printUsage();
+                clientPrincipal = args[++i];
+            } else {
+                printUsage();
+            }
+        }
        
         System.out.println("Starting GSS-API Client Example\n"); 
        
@@ -93,7 +129,7 @@ public class gssClient {
      * Connect to example GSS-API server, using specified port and 
      * service name.
      **/
-    public static void connectToServer() {
+    public void connectToServer() {
         
         try {
             clientSocket = new Socket(server, port);
@@ -118,7 +154,7 @@ public class gssClient {
      * Set up GSS-API in preparation for context establishment. Creates
      * GSSName and GSSCredential for client principal.
      **/
-    public static void initializeGSS() {
+    public void initializeGSS() {
 
         try {
             GSSName clientName = mgr.createName(clientPrincipal,
@@ -148,7 +184,7 @@ public class gssClient {
      * This method also tests exporting and re-importing the security
      * context.
      **/
-    public static void establishContext(InputStream serverIn,
+    public void establishContext(InputStream serverIn,
             OutputStream serverOut) {
 
         byte[] inToken  = new byte[0];
@@ -220,7 +256,7 @@ public class gssClient {
      * wrapped with context.wrap(), then verify the signature block which
      * the server sends back.
      **/
-    public static void doCommunication(InputStream serverIn,
+    public void doCommunication(InputStream serverIn,
             OutputStream serverOut) {
 
         MessageProp messagInfo = new MessageProp(false);
@@ -268,5 +304,15 @@ public class gssClient {
             System.out.println("GSS-API error in per-message calls: " + 
                     e.getMessage());
         }
+    }
+
+    public void printUsage() {
+        System.out.println("GSS-API example client usage:");
+        System.out.println("-?\t\tHelp, print this usage");
+        System.out.println("-h <host>\tHost to connect to, default 127.0.0.1");
+        System.out.println("-p <port>\tPort to connect on, default 11115");
+        System.out.println("-s <str>\tService name to connect to, default 'service@host'");
+        System.out.println("-c <str>\tClient principal name, default 'clientname");
+        System.exit(1);
     }
 }
